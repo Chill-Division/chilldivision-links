@@ -1,0 +1,59 @@
+BEGIN:VCALENDAR
+PRODID:-//Google Inc//Google Calendar 70.9054//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VTIMEZONE
+TZID:Pacific/Auckland
+X-LIC-LOCATION:Pacific/Auckland
+BEGIN:STANDARD
+TZOFFSETFROM:+1300
+TZOFFSETTO:+1200
+TZNAME:GMT+12
+DTSTART:19700405T030000
+RRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=1SU
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+1200
+TZOFFSETTO:+1300
+TZNAME:GMT+13
+DTSTART:19700927T020000
+RRULE:FREQ=YEARLY;BYMONTH=9;BYDAY=-1SU
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;TZID=Pacific/Auckland:20241205T150000
+DTEND;TZID=Pacific/Auckland:20241205T160000
+DTSTAMP:20241201T214831Z
+ORGANIZER;CN=Sally King:mailto:sally.king@nzmcc.nz
+UID:5u1cp9vj0jdv91b4m0no4f3k24@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/ihz-exwj-asz
+X-MICROSOFT-CDO-OWNERAPPTID:-1155065509
+CREATED:20241125T005707Z
+DESCRIPTION:NZMCC AGM commencing at 3.00 pm <br><p>This year our AGM marks 
+ a significant future shift in the NZMCC.<u></u><u></u></p><p>Current member
+ s will be voting for change in the composition of membership and a broadeni
+ ng of the purpose of our Council.  </p><p>This is an invitation to join us 
+ to discuss the new direction and evolution of NZMCC<u></u><u></u></p><p> </
+ p><br><p dir="ltr"><strong>Mihimihi/Whakatau</strong></p><p dir="ltr"><stro
+ ng>Present and Apologies  </strong></p><p dir="ltr"><strong>Previous Minute
+ s (2022/23 AGM)</strong></p><p dir="ltr"><strong>Chair &amp\;  Executive Di
+ rector Report</strong></p><p dir="ltr"><strong>Financial Report </strong></
+ p><p dir="ltr"><strong>Appointment of Auditor/Reviewer</strong></p><p dir="
+ ltr"><strong>Election of Committee Members </strong></p><p dir="ltr"><stron
+ g>Motions</strong></p><p dir="ltr"><strong>General Business</strong></p>\n\
+ n-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.com/ihz-exwj-asz\
+ nOr dial: (NZ) +64 4 889 5169 PIN: 574940386#\nMore phone numbers: https://
+ tel.meet/ihz-exwj-asz?pin=3687137292111&hs=7\n\nLearn more about Meet at: h
+ ttps://support.google.com/a/users/answer/9282720\n\nPlease do not edit this
+  section.\n-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~::~:~::-
+LAST-MODIFIED:20241201T214824Z
+LOCATION:
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:AGM
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

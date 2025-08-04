@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Rate Calculator</title>
+    <style>
+        :root {
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --primary-color: #6200ea;
+            --on-primary-color: #ffffff;
+            --on-surface-color: #e1e1e1;
+            --border-color: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--on-surface-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: var(--on-surface-color);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--on-surface-color);
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(98, 0, 234, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: var(--on-primary-color);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #7b1fa2;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: var(--background-color);
+            display: none; /* Hidden by default */
+        }
+        
+        #result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        #result-label {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⚙️ Speed Calculator</h1>
+        
+        <div class="input-group">
+            <label for="currentSpeed">Current Motor Speed</label>
+            <input type="number" id="currentSpeed" placeholder="e.g., 1700">
+        </div>
+        
+        <div class="input-group">
+            <label for="currentFlow">Current Flow Rate (mL/min)</label>
+            <input type="number" id="currentFlow" placeholder="e.g., 620">
+        </div>
+        
+        <button onclick="calculateSpeed()">Calculate</button>
+        
+        <div id="result">
+             <span id="result-label">Recommended Speed for 600 mL/min:</span>
+             <span id="result-value"></span>
+        </div>
+    </div>
+
+    <script>
+        function calculateSpeed() {
+            // Get values from input fields
+            const currentSpeed = parseFloat(document.getElementById('currentSpeed').value);
+            const currentFlow = parseFloat(document.getElementById('currentFlow').value);
+            const targetFlow = 600;
+
+            const resultDiv = document.getElementById('result');
+            const resultValueSpan = document.getElementById('result-value');
+
+            // Validate inputs
+            if (isNaN(currentSpeed) || isNaN(currentFlow) || currentSpeed <= 0 || currentFlow <= 0) {
+                resultValueSpan.textContent = 'Error';
+                document.getElementById('result-label').textContent = 'Please enter valid numbers.';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            // Calculate the new speed
+            const newSpeed = (currentSpeed / currentFlow) * targetFlow;
+            const roundedSpeed = Math.round(newSpeed);
+
+            // Display the result
+            document.getElementById('result-label').textContent = 'Recommended Speed for 600 mL/min:';
+            resultValueSpan.textContent = roundedSpeed;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+          <li class="table-view-cell">
+            <a class="push-right" href="" target="_new">
+              <strong></strong>
+            </a>
+          </li>

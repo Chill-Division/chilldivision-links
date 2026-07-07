@@ -1,0 +1,2413 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Chill Division SOP publisher">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Chill Division Security Policies and Procedures</title>
+<style>
+/* ==========================================================================
+   Chill Division SOP publishing stylesheet
+   Light mode (default) with blue accents; dark mode via [data-theme="dark"].
+   Inlined into the self-contained HTML at build time by publish/build.py.
+   ========================================================================== */
+
+:root {
+  --bg: #f6f8fb;
+  --panel: #ffffff;
+  --text: #1d2833;
+  --muted: #5c6c7d;
+  --accent: #1a6fe8;
+  --accent-strong: #0f5bd0;
+  --accent-soft: #e9f1fe;
+  --border: #dce4ee;
+  --code-bg: #eff3f9;
+  --shadow: 0 1px 3px rgba(16, 34, 60, 0.08), 0 8px 24px rgba(16, 34, 60, 0.06);
+  --topbar-h: 3.5rem;
+  --sidebar-w: 19rem;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --bg: #0e1520;
+  --panel: #151f2c;
+  --text: #dce5ef;
+  --muted: #8da0b5;
+  --accent: #5ea0ff;
+  --accent-strong: #82b5ff;
+  --accent-soft: #14273f;
+  --border: #253649;
+  --code-bg: #101a27;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Top bar
+   -------------------------------------------------------------------------- */
+
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  z-index: 40;
+}
+
+.topbar .doc-title {
+  font-weight: 650;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.version-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.icon-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.icon-btn svg { width: 1.1rem; height: 1.1rem; }
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  overflow: hidden;
+}
+.view-toggle button {
+  appearance: none;
+  border: 0;
+  background: var(--panel);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+.view-toggle button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* theme icons: show moon in light mode, sun in dark mode */
+#themeToggle .icon-sun { display: none; }
+#themeToggle .icon-moon { display: inline; }
+html[data-theme="dark"] #themeToggle .icon-sun { display: inline; }
+html[data-theme="dark"] #themeToggle .icon-moon { display: none; }
+
+/* --------------------------------------------------------------------------
+   Layout: sidebar + content
+   -------------------------------------------------------------------------- */
+
+.layout {
+  display: flex;
+  padding-top: var(--topbar-h);
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: fixed;
+  top: var(--topbar-h);
+  bottom: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 1rem 0.75rem 2rem;
+  z-index: 30;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  margin-left: var(--sidebar-w);
+  padding: 2rem clamp(1rem, 4vw, 3.5rem) 4rem;
+  max-width: calc(var(--sidebar-w) + 52rem);
+}
+
+/* Desktop: hamburger collapses the sidebar for a wider reading column. */
+@media (min-width: 1024px) {
+  .sidebar { transition: transform 0.2s ease; }
+  body.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+  body.sidebar-collapsed .content { margin-left: 0; max-width: 56rem; }
+}
+
+/* Home / all-documents link — hidden on the index itself. */
+.home-link { text-decoration: none; flex: 0 0 auto; }
+.is-index .home-link { display: none; }
+/* View toggle and chapter pager are meaningless on the index page. */
+.is-index .view-toggle,
+.is-index .pager { display: none; }
+
+.scrim {
+  display: none;
+  position: fixed;
+  inset: var(--topbar-h) 0 0 0;
+  background: rgba(10, 20, 35, 0.45);
+  z-index: 25;
+}
+
+/* Tablet / phone: off-canvas drawer */
+@media (max-width: 1023px) {
+  .sidebar {
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    box-shadow: var(--shadow);
+    width: min(var(--sidebar-w), 85vw);
+  }
+  body.nav-open .sidebar { transform: translateX(0); }
+  body.nav-open .scrim { display: block; }
+  .content { margin-left: 0; }
+  .view-toggle button { padding: 0.4rem 0.55rem; font-size: 0.74rem; }
+}
+
+/* --------------------------------------------------------------------------
+   Table of contents
+   -------------------------------------------------------------------------- */
+
+.toc-heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 0.25rem 0.75rem 0.5rem;
+}
+
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc ul ul {
+  margin-left: 0.65rem;
+  border-left: 1px solid var(--border);
+}
+
+.toc a {
+  display: block;
+  padding: 0.32rem 0.75rem;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.86rem;
+  border-radius: 0.45rem;
+  line-height: 1.35;
+}
+.toc ul ul a { font-size: 0.8rem; color: var(--muted); }
+
+.toc a:hover { background: var(--accent-soft); color: var(--accent-strong); }
+.toc a.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Document content
+   -------------------------------------------------------------------------- */
+
+.chapter { max-width: 48rem; }
+
+body.mode-chapters .chapter { display: none; }
+body.mode-chapters .chapter.current { display: block; }
+
+.content h1, .content h2, .content h3, .content h4 {
+  line-height: 1.3;
+  scroll-margin-top: calc(var(--topbar-h) + 1rem);
+}
+
+.content h1 { font-size: 1.75rem; margin: 1.5rem 0 1rem; }
+
+.content h2 {
+  font-size: 1.45rem;
+  margin: 2.25rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent);
+}
+
+.content h3 { font-size: 1.15rem; margin: 1.9rem 0 0.7rem; }
+.content h4 { font-size: 1rem; margin: 1.5rem 0 0.6rem; color: var(--muted); }
+
+.content a { color: var(--accent-strong); text-decoration: none; }
+.content a:hover { text-decoration: underline; }
+
+.content p { margin: 0.8rem 0; }
+
+.content ol, .content ul { padding-left: 1.6rem; margin: 0.8rem 0; }
+.content li { margin: 0.45rem 0; }
+.content li > ol, .content li > ul { margin: 0.45rem 0; }
+
+/* Hierarchical SOP numbering (12 → 12.1 → 12.4.1), stamped at build time
+   as data-num attributes on ordered-list items. */
+.content ol.num-ol { list-style: none; padding-left: 0; }
+.content ol.num-ol > li { position: relative; padding-left: 3em; }
+.content ol.num-ol ol.num-ol > li { padding-left: 4em; }
+.content ol.num-ol ol.num-ol ol.num-ol > li { padding-left: 5em; }
+.content ol.num-ol ol.num-ol ol.num-ol ol.num-ol > li { padding-left: 6em; }
+.content ol.num-ol > li::before {
+  content: attr(data-num);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-strong);
+}
+
+.content blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1.1rem;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 0.55rem 0.55rem 0;
+  color: var(--text);
+}
+.content blockquote p { margin: 0.4rem 0; }
+
+.content code {
+  font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, Menlo, monospace;
+  font-size: 0.86em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  padding: 0.08em 0.35em;
+}
+
+.content pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  padding: 0.9rem 1.1rem;
+  overflow-x: auto;
+}
+.content pre code { background: none; border: 0; padding: 0; }
+
+.content hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+  display: block;
+  overflow-x: auto;
+}
+.content table thead th {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  text-align: left;
+  font-weight: 650;
+}
+.content table th, .content table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  vertical-align: top;
+}
+.content table tbody tr:nth-child(even) { background: color-mix(in srgb, var(--accent-soft) 40%, transparent); }
+
+.content img { max-width: 100%; height: auto; }
+
+/* --------------------------------------------------------------------------
+   Chapter pager
+   -------------------------------------------------------------------------- */
+
+.pager {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  max-width: 48rem;
+}
+body.mode-chapters .pager { display: flex; }
+
+.pager button {
+  appearance: none;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-strong);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pager button:hover:not(:disabled) { border-color: var(--accent); }
+.pager button:disabled { opacity: 0.35; cursor: default; }
+
+.pager .pager-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.docfooter {
+  margin-top: 3rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  flex-wrap: wrap;
+}
+.docfooter a { color: var(--accent-strong); text-decoration: none; white-space: nowrap; }
+.docfooter a:hover { text-decoration: underline; }
+
+/* --------------------------------------------------------------------------
+   Search
+   -------------------------------------------------------------------------- */
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 35, 0.45);
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10vh 1rem 1rem;
+}
+.search-overlay[hidden] { display: none; }
+
+.search-box {
+  width: 100%;
+  max-width: 38rem;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.search-inputrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.search-inputrow svg { width: 1.1rem; height: 1.1rem; color: var(--muted); flex: 0 0 auto; }
+
+#searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+}
+
+#searchClose {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: 0.4rem;
+  padding: 0.15rem 0.45rem;
+  cursor: pointer;
+}
+#searchClose:hover { border-color: var(--accent); color: var(--accent); }
+
+.search-results { overflow-y: auto; overscroll-behavior: contain; }
+
+.search-result {
+  appearance: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+.search-result:last-child { border-bottom: 0; }
+.search-result:hover, .search-result.selected { background: var(--accent-soft); }
+
+.sr-meta {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.4rem;
+}
+
+.sr-text { flex: 1; min-width: 0; }
+.sr-text.sr-heading { font-weight: 650; }
+
+.search-result mark {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: inherit;
+  border-radius: 0.2rem;
+  padding: 0 0.08em;
+}
+
+.search-empty { padding: 1rem; color: var(--muted); font-size: 0.86rem; }
+
+/* Flash the target after jumping to a search result. */
+.search-hit { animation: search-hit 1.7s ease-out; }
+@keyframes search-hit {
+  0%, 45% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); border-radius: 0.3rem; }
+  100% { background: transparent; box-shadow: none; }
+}
+
+/* Keep jump targets clear of the fixed topbar. */
+.content li, .content p, .content tr { scroll-margin-top: calc(var(--topbar-h) + 1rem); }
+
+/* Phones: tighten the topbar so the extra search button still fits. */
+@media (max-width: 540px) {
+  .topbar { gap: 0.45rem; padding: 0 0.6rem; }
+  .icon-btn { width: 2rem; height: 2rem; }
+  .topbar .version-badge { display: none; }
+  .view-toggle button { padding: 0.35rem 0.45rem; font-size: 0.7rem; }
+}
+
+/* --------------------------------------------------------------------------
+   Index page cards
+   -------------------------------------------------------------------------- */
+
+.doc-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.doc-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.doc-card h3 { margin: 0; font-size: 1.05rem; }
+.doc-card .version-badge { align-self: flex-start; margin-left: 0; }
+.doc-card .doc-links { margin-top: auto; display: flex; gap: 0.6rem; padding-top: 0.75rem; }
+.doc-card .doc-links a {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--accent-strong);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+}
+.doc-card .doc-links a:hover { border-color: var(--accent); }
+.doc-card .doc-links a.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* --------------------------------------------------------------------------
+   Print — A4
+   -------------------------------------------------------------------------- */
+
+.print-only { display: none; }
+
+@page {
+  size: A4;
+  margin: 18mm 16mm;
+}
+
+@media print {
+  :root, html[data-theme="dark"] {
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --text: #17202b;
+    --muted: #4a5866;
+    --accent: #1a5fc4;
+    --accent-strong: #14509f;
+    --accent-soft: #edf3fc;
+    --border: #c9d4e0;
+    --code-bg: #f2f5f9;
+  }
+
+  body { background: #fff; font-size: 10.5pt; line-height: 1.5; }
+
+  .topbar, .sidebar, .scrim, .pager, #navToggle { display: none !important; }
+
+  .layout { padding-top: 0; }
+  .content { margin-left: 0; padding: 0; max-width: none; }
+  .chapter { display: block !important; max-width: none; }
+
+  .print-only { display: block; }
+
+  .print-title {
+    page-break-after: always;
+    padding-top: 30vh;
+    text-align: center;
+  }
+  .print-title .pt-brand {
+    font-size: 12pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-bottom: 1.5rem;
+  }
+  .print-title h1 { font-size: 22pt; margin: 0 0 1rem; }
+  .print-title .pt-version { color: var(--muted); font-size: 10pt; }
+
+  .chapter > h1, .chapter > h2:first-child { page-break-before: always; }
+  .chapter:first-of-type > h2:first-child { page-break-before: avoid; }
+
+  h1, h2, h3, h4 { page-break-after: avoid; }
+  table, blockquote, pre, img { page-break-inside: avoid; }
+  li { page-break-inside: avoid; }
+
+  .content table { display: table; font-size: 9pt; }
+
+  .content a { color: var(--text); text-decoration: none; }
+
+  .docfooter { border-top: 1px solid var(--border); padding-top: 0.5rem; }
+}
+
+</style>
+</head>
+<body class="mode-chapters ">
+
+<header class="topbar">
+  <button id="navToggle" class="icon-btn" aria-label="Toggle navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="home-link icon-btn" href="index.html" aria-label="All documents" title="All documents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h5v-5h4v5h5v-9"/></svg>
+  </a>
+  <div class="doc-title">Chill Division Security Policies and Procedures<span class="version-badge">v3.0</span></div>
+  <div class="controls">
+    <div class="view-toggle" role="group" aria-label="View mode">
+      <button id="viewChapters" class="active" type="button">Chapters</button>
+      <button id="viewSingle" type="button">Single page</button>
+    </div>
+    <button id="searchToggle" class="icon-btn" aria-label="Search" title="Search ( / )" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button id="themeToggle" class="icon-btn" aria-label="Toggle dark mode" type="button">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="toc-heading">Contents</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" data-ch="0">Introduction</a>
+</li>
+<li><a href="#1-building-security-requirements" data-ch="1">1. Building security requirements</a>
+<ul>
+<li><a href="#location" data-ch="1">Location</a></li>
+<li><a href="#general-security-principals" data-ch="1">General security principals</a></li>
+<li><a href="#physical-security-arrangements" data-ch="1">Physical Security Arrangements</a></li>
+</ul></li>
+<li><a href="#disposal-record-keeping" data-ch="2">Disposal &amp; record keeping</a>
+<ul>
+<li><a href="#2-cannabis-record-keeping" data-ch="2">2. Cannabis record keeping</a></li>
+<li><a href="#3-incident-management" data-ch="2">3. Incident management</a></li>
+<li><a href="#4-record-adjustment" data-ch="2">4. Record adjustment</a></li>
+<li><a href="#5-recall-return-of-biomass" data-ch="2">5. Recall / return of biomass</a></li>
+<li><a href="#6-disposal-of-biomass" data-ch="2">6. Disposal of biomass</a></li>
+<li><a href="#7-general-rubbish-disposal" data-ch="2">7. General rubbish disposal</a></li>
+</ul></li>
+<li><a href="#maintenance" data-ch="3">Maintenance</a>
+<ul>
+<li><a href="#8-cleaning" data-ch="3">8. Cleaning</a></li>
+<li><a href="#9-scheduled-unscheduled-maintenance" data-ch="3">9. Scheduled / unscheduled maintenance</a></li>
+<li><a href="#10-instrument-and-sensor-cleaning-calibration" data-ch="3">10. Instrument and sensor cleaning / calibration</a></li>
+</ul></li>
+<li><a href="#site-access-security" data-ch="4">Site access / security</a>
+<ul>
+<li><a href="#11-inspections-and-testing" data-ch="4">11. Inspections and testing</a></li>
+<li><a href="#12-backups-remote-access" data-ch="4">12. Backups / remote access</a></li>
+<li><a href="#13-general-site-standards-expectations" data-ch="4">13. General site standards / expectations</a></li>
+<li><a href="#14-general-site-security-principles" data-ch="4">14. General site security principles</a></li>
+<li><a href="#15-staff-access" data-ch="4">15. Staff access</a></li>
+<li><a href="#16-guest-other-visitor-access" data-ch="4">16. Guest / other visitor access</a></li>
+<li><a href="#17-access-logging-and-surveillance-review" data-ch="4">17. Access logging and surveillance review</a></li>
+<li><a href="#18-encryption-levels" data-ch="4">18. Encryption levels</a></li>
+<li><a href="#19-video-surveillance" data-ch="4">19. Video surveillance</a></li>
+<li><a href="#20-staff-onboarding-and-policy-upkeep" data-ch="4">20. Staff onboarding and policy upkeep</a></li>
+<li><a href="#21-staff-personal-security" data-ch="4">21. Staff personal security</a></li>
+</ul></li>
+<li><a href="#inward-outward-goods" data-ch="5">Inward / outward goods</a>
+<ul>
+<li><a href="#22-approved-suppliers" data-ch="5">22. Approved suppliers</a></li>
+<li><a href="#23-approved-recipients" data-ch="5">23. Approved recipients</a></li>
+<li><a href="#24-purchasing-of-cannabis-materials" data-ch="5">24. Purchasing of cannabis materials</a></li>
+<li><a href="#25-sending-receiving-parcels" data-ch="5">25. Sending / receiving parcels</a></li>
+<li><a href="#26-sending-wet-dry-biomass" data-ch="5">26. Sending wet / dry biomass</a></li>
+</ul></li>
+<li><a href="#additional-items" data-ch="6">Additional items</a>
+<ul>
+<li><a href="#chill-division-universal-shipping-manifest" data-ch="6">Chill Division Universal Shipping Manifest</a></li>
+<li><a href="#annual-stock-take-reporting" data-ch="6">Annual Stock Take reporting</a></li>
+</ul></li>
+<li><a href="#changelog" data-ch="7">Changelog</a>
+</li>
+</ul>
+    </div>
+  </nav>
+  <div id="scrim" class="scrim"></div>
+
+  <main id="content" class="content">
+    <div class="print-only print-title">
+      <div class="pt-brand">Chill Division</div>
+      <h1>Chill Division Security Policies and Procedures</h1>
+      <div class="pt-version">v3.0 &middot; Generated 2026-07-08</div>
+    </div>
+
+<section class="chapter"><p><strong>Cultivation Facility</strong>
+Security Policies and Procedures for soilless media facility</p>
+<p>v3.0
+&quot;The complete set&quot;</p>
+<hr />
+<h2 id="introduction">Introduction</h2>
+<blockquote>
+<p><strong>AI use is not acceptable in these SOPs.</strong> It hasn't been used to write them,
+nor will commits made with it be accepted. The exception is the underlying framework
+for displaying / formatting the SOPs online, but not the content itself.</p>
+</blockquote>
+<p>These Security Policies &amp; Procedures work together with the <strong>Chill Division Site
+Design Guidelines</strong> and the <strong>Chill Division Cultivation SOP</strong>. A licence
+application should include all three documents. The building-security chapter of
+the Site Design Guidelines (Chapter 1) is intentionally mirrored between that
+document and this one, as the information is crucial both for planning a site and
+for keeping it secure.</p>
+<p>Submitting these procedures as part of a licence application does not, by itself,
+result in a licence being granted. The Medicinal Cannabis Agency assesses the
+totality of the security arrangements, and what matters most is the
+implementation: that the facility and its day-to-day operation actually follow
+what is described here.</p>
+<p>All terminology follows <a href="https://datatracker.ietf.org/doc/html/rfc2119">RFC 2119</a>
+(MUST / SHOULD / MAY).</p>
+<p>Copyright © Chill Division. Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>, with attribution and trademark terms set out in the <a href="https://github.com/Chill-Division/SOPs/blob/main/NOTICE">NOTICE</a>.</p>
+<hr />
+</section>
+<section class="chapter"><h2 id="1-building-security-requirements">1. Building security requirements</h2>
+<p>These procedures will aid in selecting a premise for lease to cultivate in, along with ensuring that the appropriate amendments to the facility are made to ensure the safety of cannabis.</p>
+<p>When searching for a lease, a facility owner should be mindful of the amount of time the lease is likely to last, and so seeking a 4-5 year lease term, with 2+2 ROR (Right of Refusal) is often desirable. If a facility owner is seeking to have 50-60sqm of canopy space, a 160-200sqm warehouse lease is likely going to be sufficient, with further optimizations able to be had by an experienced owner.</p>
+<p>The Landlord of this warehouse must be willing to provide a letter to the Medicinal Cannabis Agency to include with your licence application. It must state their approval of your undertakings at the location, so it pays to be up-front with your landlord, and engage a regulatory consulting expert who can assist with ensuring a successful lease.</p>
+<p>It is also worth noting that in cases where some of these guidelines are unable to be followed, the totality of the security arrangements will be assessed by the Medicinal Cannabis Agency, and there may be flexibility in some instances. However, the assumption of oneself being “the exception to the rule” is not an optimal place to start, but rather a place whereby a regulatory consultant may be able to offer ways to make a location suitable even if it does not match 100% of the criteria from the outset.</p>
+<p>During build-out, and before the Medicinal Cannabis Agency’s site audit, Responsible Personnel should also notify the New Zealand Police of the proposed location and the nature of activities to be conducted on-site.</p>
+<h3 id="location">Location</h3>
+<ol class="num-ol">
+<li data-num="1.1" id="i-1-1">
+<p>The premise should not be within 120m of any residential properties. This is the minimum distance to aim for. Where a prospective site cannot meet it, the location should be reviewed with a regulatory consultant on a case-by-case basis, and may still be accepted at the Medicinal Cannabis Agency’s discretion.</p>
+<ol class="num-ol">
+<li data-num="1.1.1" id="i-1-1-1">
+<p>The premise should ideally have at least a 150-200m radius around the facility location whereby there are no other residential properties, unless the house is that of the owner of the cultivation facility or similar.</p>
+</li>
+<li data-num="1.1.2" id="i-1-1-2">
+<p>The premise should not be within 200m of a school, kura, kindergarten, preschool, highschool, or other place of education.</p>
+</li>
+<li data-num="1.1.3" id="i-1-1-3">
+<p>The premise should ideally be in a built-up industrial area.</p>
+<ol class="num-ol">
+<li data-num="1.1.3.1" id="i-1-1-3-1">A commercial area may be considered but is not recommended due to the possibility of elevated foot-traffic from pedestrians and the general-public.</li>
+</ol>
+</li>
+<li data-num="1.1.4" id="i-1-1-4">
+<p>Rural residential properties may be considered as a suitable location for a cultivation facility, such as a greenfield site, but with the expectation that cultivation will take place indoors. This indoors may be a shed, a container, or a constructed premise.</p>
+<ol class="num-ol">
+<li data-num="1.1.4.1" id="i-1-1-4-1">Any site should still ensure there is at least 120m from the location of the desired cultivation facility building, and any neighbouring residential homes, as with item 1 above.</li>
+</ol>
+</li>
+<li data-num="1.1.5" id="i-1-1-5">
+<p>The building may be adjacent to other industrial units in a “light industrial complex” type of situation.</p>
+<ol class="num-ol">
+<li data-num="1.1.5.1" id="i-1-1-5-1">Thick concrete walls or other secure framing should be in-place between the units.</li>
+</ol>
+</li>
+<li data-num="1.1.6" id="i-1-1-6">
+<p>Where a standalone unit is sought for cultivation, such as a shed or individual warehouse, there must be two barriers to entry at all times to any room where cannabis materials will be held. As such a fence / gate may be used as one of these barriers, however it must be able to stand on its own merit and should be a suitable distance from the premise.</p>
+</li>
+<li data-num="1.1.7" id="i-1-1-7">
+<p>Consideration should also be given to the layout of any pre-existing warehouses, as certain rooms may be unsuitable for use for cultivation aspects due to existing doors / walkways within the facility.</p>
+<ol class="num-ol">
+<li data-num="1.1.7.1" id="i-1-1-7-1">This often includes a “lunchroom” on the externally facing wall which also has an adjacent roller door. Due to the roller door being a single barrier to entry, although there may be two doors any personnel would normally enter through via the lunchroom, additional internal barriers to entry would need to be considered</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="general-security-principals">General security principals</h3>
+<p>The majority of these requirements will be fit-out requirements that the facility owner will have to implement, and are unlikely to be available in any pre-existing setup. These principals will guide the design of the facility.</p>
+<ol start="8" class="num-ol">
+<li data-num="1.8" id="i-1-8">
+<p>There should be no external signage, logos, emblems or markings anywhere on-site that relates to the company, or the nature of the business being conducted on-site</p>
+<ol class="num-ol">
+<li data-num="1.8.1" id="i-1-8-1">If required as part of body corporate signage etc, a decoy name should be used, or that of a separate / unrelated business.</li>
+</ol>
+</li>
+<li data-num="1.9" id="i-1-9">
+<p>Generic and unidentifiable alarm / security stickers are permitted for the purpose of deterring diversion attempts / unauthorized access.</p>
+</li>
+<li data-num="1.10" id="i-1-10">
+<p>PINs are not to be written down anywhere, nor any identifying marks made on the key fobs that would pertain to the company (such as name or address) or any other such references to the site / location.</p>
+</li>
+<li data-num="1.11" id="i-1-11">
+<p>Keys are not recommended for physical access to any locations of the site due to easy cloning and copying. Where no other alternative is available (such as for a gate / fence), keys may be used and should be marked as “<strong>DO NOT COPY</strong>”.</p>
+<ol class="num-ol">
+<li data-num="1.11.1" id="i-1-11-1">For any padlocks, a tumbler-PIN lock should be utilized if no other alternatives can be used, instead of a key-based lock.</li>
+</ol>
+</li>
+<li data-num="1.12" id="i-1-12">
+<p>Access to any area of the site which may contain cannabis biomass must employ a method of <em>2-factor authentication</em> (Two separate factors of authorization) in order to reach any room where cannabis materials may be. This means one door may require a fingerprint whereas another requires a PIN.</p>
+</li>
+<li data-num="1.13" id="i-1-13">
+<p>2-factor authentication methods may include but are not limited to a combination of a PIN + fingerprint, PIN + key fob, fingerprint + key fob, PIN + NFC authentication method or other similar security arrangement. This ensures that should a Key Fob / cellphone be lost, stolen, or go missing, its use would not permit any unauthorized access to the site.</p>
+</li>
+<li data-num="1.14" id="i-1-14">
+<p>An alarm must sound in the event the external personnel doors remain open for a period of more than 60 seconds. A siren must sound inside the facility, acting as a deterrent to any attempted diversion, should a break-in be attempted.</p>
+<ol class="num-ol">
+<li data-num="1.14.1" id="i-1-14-1">Responsible Persons will also be automatically notified electronically of the security breach so that security footage can be reviewed and appropriate remedial actions can be taken including calling of the Police if required.</li>
+</ol>
+</li>
+<li data-num="1.15" id="i-1-15">
+<p>Ensure that unauthorized individuals, including guests and other personnel, are unable to view the entry of the PIN code on any keypad.</p>
+</li>
+<li data-num="1.16" id="i-1-16">
+<p>Ensure that unauthorized individuals are unable to gain access to the cultivation facility by tailing authorized personnel through a closing door.</p>
+</li>
+<li data-num="1.17" id="i-1-17">
+<p>Personal belongings should be left off-site where possible, such as in your vehicle. Any bags or other items taken into the secure areas may be searched before you exit the building.</p>
+</li>
+<li data-num="1.18" id="i-1-18">
+<p>The site must be operated in a manner such that smell does not escape to bother nearby neighbours or businesses. This may involve operating the facility at a <strong>negative pressure</strong> and / or <strong>carbon filtration</strong> for any venting of air.</p>
+<ol class="num-ol">
+<li data-num="1.18.1" id="i-1-18-1">
+<p>This may also include internal scrubbing of air with carbon filtration.</p>
+</li>
+<li data-num="1.18.2" id="i-1-18-2">
+<p>HEPA / MERV filtration is not an acceptable method of odour control, as the filters are only designed to capture dust and other particulate matter, and only carbon filtration is acceptable for scrubbing odour.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.19" id="i-1-19">
+<p>To further combat odour escaping, all rooms where cannabis materials are held should be sealed with a silicon-based beading (Such as Sikaflex AT-Facade) along any gaps in wall-panels, joins, edges, skirting boards, and around drainages. This will minimize odour escape while also maximizing CO2 injection efficiency.</p>
+<ol class="num-ol">
+<li data-num="1.19.1" id="i-1-19-1">Care should be taken where any electrical / data cabling may enter the room, as well as plumbing and CO2 related penetrations.</li>
+</ol>
+</li>
+<li data-num="1.20" id="i-1-20">
+<p>Similarly, doors to those rooms should also be fitted with an edge / automatic door bottom sealer, such as Ravenseal RP10Si frame-seal / RP8Si door bottom automatic sealer, to prevent further odour escaping or CO2 leaking.</p>
+<ol class="num-ol">
+<li data-num="1.20.1" id="i-1-20-1">Alternatively where doors can be retrofit / replaced, a hermetically sealed door should be used.</li>
+</ol>
+</li>
+<li data-num="1.21" id="i-1-21">
+<p>Documents such as SOPs, Floorplan etc must always include a version number. This should be in the form of Semantic Versioning (Major.Minor.Patch) format as defined by the Semantic Versioning 2.0.0 specification (semver.org), or date-based versioning as described in ISO 8601 (YYYYMMDD).</p>
+</li>
+<li data-num="1.22" id="i-1-22">
+<p>Any floorplan provided to the Medicinal Cannabis Agency must label each internal room with its purpose (Flower1, Flower2, Nursery, Drying etc). Each physical room must then be labelled with a matching sticker / poster, on or directly adjacent to its door, so that the physical labels always align with the floorplan.</p>
+<ol class="num-ol">
+<li data-num="1.22.1" id="i-1-22-1">The locations of free-standing equipment relevant to security or odour control (such as carbon / HEPA filters) should also be noted on the floorplan.</li>
+</ol>
+</li>
+</ol>
+<h3 id="physical-security-arrangements">Physical Security Arrangements</h3>
+<ol start="24" class="num-ol">
+<li data-num="1.24" id="i-1-24">
+<p>If there is a fence acting as a barrier to entry, it must be sufficiently far from the other barrier to entry (such as building exterior) that it is able to stand on its own merit as a defense mechanism.</p>
+<ol class="num-ol">
+<li data-num="1.24.1" id="i-1-24-1">
+<p>The fence should be of sturdy construction, such that it would stand up to a ram attempt from a vehicle.</p>
+</li>
+<li data-num="1.24.2" id="i-1-24-2">
+<p>The fence should be of a climb-proof construction, e.g. flat-faced wooden planks vertically aligned with a minimal gap between them, or vertical metal bars, but not of diamond-mesh that can be used as a hand / foot grip.</p>
+<ol class="num-ol">
+<li data-num="1.24.2.1" id="i-1-24-2-1">Depending on the height, it may be suitable to also install barbed wire along the top of the fence.</li>
+</ol>
+</li>
+<li data-num="1.24.3" id="i-1-24-3">
+<p>The fence must not be able to be jimmied up from the bottom, such as with a spade or crowbar. This is especially important if it is a metal fence that doesn’t have a thick and solid bottom.</p>
+</li>
+<li data-num="1.24.4" id="i-1-24-4">
+<p>The fence must be of a decent height such that it is unable to be leaped over, with a minimum of 1.8m but ideally 2m+</p>
+</li>
+<li data-num="1.24.5" id="i-1-24-5">
+<p>The fence must not be an excessive height off the ground such that somebody could slip underneath it, such as 120mm or less.</p>
+</li>
+<li data-num="1.24.6" id="i-1-24-6">
+<p>Any gate must be able to automatically swing shut and re-lock</p>
+</li>
+<li data-num="1.24.7" id="i-1-24-7">
+<p>Gate access must also follow the same access control as the rest of the facility, and as such maglocks are usually recommended.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.25" id="i-1-25">
+<p>All windows on any ground floor should be barred or boarded with plywood such that in the event of an unauthorized person attempting to gain entry to the site, they would still be unable to do so.</p>
+</li>
+<li data-num="1.26" id="i-1-26">
+<p>If the roller door does not have an external bollard, (e.g. there is an internal bollard), then any externally accessible roller doors must be latched internally in such a way to prevent jimmying open from the outside, such as with a crowbar.</p>
+<ol class="num-ol">
+<li data-num="1.26.1" id="i-1-26-1">This may be in the form of an internal latch, or maglocks appropriately spaced along the length of the roller door.</li>
+</ol>
+</li>
+<li data-num="1.27" id="i-1-27">
+<p>All roller doors must also have some form of additional internal or external barrier, such as a bollard or ram-arm.</p>
+</li>
+<li data-num="1.28" id="i-1-28">
+<p>If there are external glass doors, these must also be barred internally.</p>
+</li>
+<li data-num="1.29" id="i-1-29">
+<p>All external doors, as well as any internal doors to rooms that may contain cannabis materials, must have an automatic closing mechanism installed.</p>
+</li>
+<li data-num="1.30" id="i-1-30">
+<p>All external doors, as well as any internal doors to rooms that may contain cannabis materials, must have an automatic locking mechanism.</p>
+<ol class="num-ol">
+<li data-num="1.30.1" id="i-1-30-1">Doors with locks must relock immediately upon closing.</li>
+</ol>
+</li>
+<li data-num="1.31" id="i-1-31">
+<p>All PIN locks must automatically lock the keypad after a maximum of 5 incorrect attempts in a row, and must not unlock for a period of 3 minutes, to deter any brute force attempts.</p>
+</li>
+<li data-num="1.32" id="i-1-32">
+<p>Locks must remain operational at all times. A battery UPS must remain in place to maintain the things such as mains-powered maglocks in the event of a power failure.</p>
+<ol class="num-ol">
+<li data-num="1.32.1" id="i-1-32-1">All digital locks must have an expected battery life of 12+ months, with the intent that even at critical battery levels they will remain operational for a period of no less than 1 week. This is to ensure that in the event of a fire / power outage the locks will always permit staff to exit the facility.</li>
+</ol>
+</li>
+<li data-num="1.33" id="i-1-33">
+<p>All external doors, and any doors to rooms that may contain cannabis materials, must be fitted with a door-state sensor so that door open / close events are logged with a timestamp, and so that alerts (such as the alarm for doors remaining open for more than 60 seconds) can function.</p>
+<ol class="num-ol">
+<li data-num="1.33.1" id="i-1-33-1">
+<p>Zigbee contact sensors are the most common and practical choice for this. Alternatively, wired options such as hall-effect sensors or limit-switch style sensors, attached to a PoESP32 or Atom Lite, may be used.</p>
+</li>
+<li data-num="1.33.2" id="i-1-33-2">
+<p>Roller doors should also have state sensing, so that an unexpected opening outside of business hours triggers an alert.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.34" id="i-1-34">
+<p>If there is any skylight, it must be frosted such that if work is being undertaken on the roof (e.g. Bodycorp repainting a roof) they are unable to see inside and ascertain the undertakings within.</p>
+<ol class="num-ol">
+<li data-num="1.34.1" id="i-1-34-1">
+<p>Skylights should be painted entirely where possible, to avoid light bleed, especially in cultivation rooms where photosensitive plants may be.</p>
+</li>
+<li data-num="1.34.2" id="i-1-34-2">
+<p>If possible, a fake secondary ceiling should be constructed on the inside, both as an odor control measure, allowing for insulation, and further obscuring the room contents.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.35" id="i-1-35">
+<p>Cameras must be installed in every room that will contain cannabis materials, such as grow rooms, drying spaces and disposal areas.</p>
+<ol class="num-ol">
+<li data-num="1.35.1" id="i-1-35-1">
+<p>Cameras do not need to be in rooms that will not contain cannabis materials, such as lunchrooms or changing areas.</p>
+</li>
+<li data-num="1.35.2" id="i-1-35-2">
+<p>Cameras may be installed in hallways or other functional areas where cannabis movement between rooms may be.</p>
+</li>
+<li data-num="1.35.3" id="i-1-35-3">
+<p>Larger rooms will likely require two or more cameras, with the primary camera having a close / unobstructed view of the room entrance, and others showing a broader perspective of the room to detect intruders / movement.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.36" id="i-1-36">
+<p>Care should be taken when selecting a camera for any room that will have growing plants, the night-vision using far-red (iR) can interfere with plant photoperiods where the spectrum falls inside the 400-700nm PAR range.</p>
+<ol class="num-ol">
+<li data-num="1.36.1" id="i-1-36-1">
+<p>Cameras such as the Reolink RLC-510A or RLC-810A are recommended due to having infrared LEDs that are approx 830nm, and should not interfere with a plants photoperiod and ability to “sleep” at night.</p>
+</li>
+<li data-num="1.36.2" id="i-1-36-2">
+<p>Cameras must be cabled and PoE-powered. Battery-operated cameras are never acceptable. Any camera selected must support at least 1280x720 resolution at 2fps or better, continuous 24/7 recording (motion detection may supplement, but never replace, continuous recording), and automatic IR for clear recording in darkness.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.37" id="i-1-37">
+<p>Cameras must also be installed outside, facing in every possible direction of approach for a would-be intruder.</p>
+<ol class="num-ol">
+<li data-num="1.37.1" id="i-1-37-1">
+<p>For standalone buildings this will likely be a camera on each corner facing a 90-degree rotation from the previous camera.</p>
+</li>
+<li data-num="1.37.2" id="i-1-37-2">
+<p>For facilities part of a “block” of buildings, this will likely be the front in two directions with the cameras “crossing over” view of each other.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.38" id="i-1-38">
+<p>Where there is sufficient space above any fake-ceilings, cameras must also be installed in order to offer an early detection of movement for any attempted intrusion via the roof / ceiling.</p>
+<ol class="num-ol">
+<li data-num="1.38.1" id="i-1-38-1">This should ideally be two cameras that cross over vision, rather than just a single camera</li>
+</ol>
+</li>
+<li data-num="1.39" id="i-1-39">
+<p>An NVR should be selected that has the capacity to hold data for at least 30 days.</p>
+<ol class="num-ol">
+<li data-num="1.39.1" id="i-1-39-1">
+<p>The exact capacity will depend on the number of cameras, and the amount of movement those cameras observe, but a good rule of thumb is 3TB for 2 cameras (When recording with a video bitrate of 4096kbps) for a months storage.</p>
+<ol class="num-ol">
+<li data-num="1.39.1.1" id="i-1-39-1-1">For example, if a facility has 12 cameras, then there should be 18TB of storage made available.</li>
+</ol>
+</li>
+<li data-num="1.39.2" id="i-1-39-2">
+<p>Where possible, a RAID-5 or RAID-1 setup is recommended for data redundancy.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.40" id="i-1-40">
+<p>A Duress Button should be installed near all main entrances to the premises, such that if a staff member is forced to open the building, under duress or threat of physical harm / violence, they can discretely push this button upon entry.</p>
+<ol class="num-ol">
+<li data-num="1.40.1" id="i-1-40-1">
+<p>Having them situated near primary lighting is considered to be an optimal location. However, these buttons should be unmarked so that there is nothing to indicate that they have triggered a silent alarm notifying other responsible personnel etc.</p>
+</li>
+<li data-num="1.40.2" id="i-1-40-2">
+<p>A wireless Zigbee button such as a <a href="https://www.aliexpress.com/item/4001021237879.html">Xiaomi / Aqara Mini Button</a> is ideal for discrete and flexible placement.</p>
+</li>
+<li data-num="1.40.3" id="i-1-40-3">
+<p>Alternatively, a <a href="https://github.com/Chill-Division/M5Stack-ESPHome/blob/main/Mini%20Dual%20Button%20Unit.md">Mini Dual Button unit</a>, or <a href="https://github.com/Chill-Division/M5Stack-ESPHome/blob/main/Mechanical%20Key%20Button%20Unit.md">Mechanical Key Button</a>, attached to an Atom Lite or PoESP32 may be utilized to the same effect</p>
+</li>
+</ol>
+</li>
+<li data-num="1.41" id="i-1-41">
+<p>A standalone controlled-drug safe / vault is not required, as the Medicinal Cannabis Agency holds overriding jurisdiction and discretion over storage arrangements. Instead, the facility owner must ascertain the most secure room within their facility to act as the secure storage area for packaged product and any biomass staged for dispatch, and note this room on the floorplan provided to the Medicinal Cannabis Agency.</p>
+<ol class="num-ol">
+<li data-num="1.41.1" id="i-1-41-1">
+<p>Most facilities will find their drying or processing room to be the most suitable choice, as these rooms already meet the access control, surveillance, and environmental requirements for holding cannabis materials.</p>
+</li>
+<li data-num="1.41.2" id="i-1-41-2">
+<p>The room selected must meet all of the same requirements as any other room holding cannabis materials, including 2-factor authentication for access, camera coverage with a close / unobstructed view of the entrance, and automatic door closing / locking mechanisms.</p>
+</li>
+</ol>
+</li>
+<li data-num="1.42" id="i-1-42">
+<p>Where the facility has a roller door, the loading bay area should be designed such that a delivery vehicle can be reversed flush up against the opening and the roller door area obscured, so that loading / unloading of any goods, plants, or cannabis materials cannot be observed from outside.</p>
+<ol class="num-ol">
+<li data-num="1.42.1" id="i-1-42-1">
+<p>Almost every facility will only have a small area by the roller door that won't fit a whole vehicle inside, and this is acceptable to the Medicinal Cannabis Agency, provided the vehicle reversed flush against the opening obscures visibility during loading / unloading.</p>
+</li>
+<li data-num="1.42.2" id="i-1-42-2">
+<p>The loading bay should have its own camera coverage, in keeping with the camera requirements above.</p>
+</li>
+<li data-num="1.42.3" id="i-1-42-3">
+<p>This area will also serve as the reception point for large deliveries, new plant introductions, and contractor vehicles / tools, so consideration should be given to keeping it clear of permanent fixtures.</p>
+</li>
+</ol>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="disposal-record-keeping">Disposal &amp; record keeping</h2>
+<h3 id="2-cannabis-record-keeping">2. Cannabis record keeping</h3>
+<ol class="num-ol">
+<li data-num="2.1" id="i-2-1">
+<p>Records of cannabis in / out shall be kept to ensure regulatory compliance and aid with tracking / diversion prevention. These records should <strong>not</strong> be kept in an easily manipulated spreadsheet or other form.</p>
+<ol class="num-ol">
+<li data-num="2.1.1" id="i-2-1-1">It is recommended to use <a href="https://github.com/Chill-Division/GRACe_repo">GRACe portal by Chill Division</a> for plant / flower tracking.</li>
+<li data-num="2.1.2" id="i-2-1-2">Alternatives such as <a href="https://www.canix.com/cannabis-seed-to-sale-software">Canix</a> or <a href="https://openthc.com/">OpenTHC</a> may be used.</li>
+</ol>
+</li>
+<li data-num="2.2" id="i-2-2">
+<p>Monthly reports of any cannabis materials (dried flower, plants) sent out from the facility shall be emailed to the Medicinal Cannabis Agency to ensure adherence with Regulation 70. This shall include:</p>
+<ol class="num-ol">
+<li data-num="2.2.1" id="i-2-2-1">the date the items were sent</li>
+<li data-num="2.2.2" id="i-2-2-2">description of cannabis type</li>
+<li data-num="2.2.3" id="i-2-2-3">quantity / volume</li>
+<li data-num="2.2.4" id="i-2-2-4">receiver details (name + address)</li>
+</ol>
+</li>
+<li data-num="2.3" id="i-2-3">
+<p>This shall be sent to the Medicinal Cannabis Agency within 7 days of the end of each month to <a href="mailto:medicinal_cannabis@health.govt.nz">medicinal_cannabis@health.govt.nz</a>, unless there is &quot;nothing to report&quot; in which case nothing needs to be sent.</p>
+<ol class="num-ol">
+<li data-num="2.3.1" id="i-2-3-1">The first month after obtaining a licence, a Responsible Person named on the licence shall email, even if &quot;nothing to report&quot;, to confirm a solid regulatory compliance understanding with the Medicinal Cannabis Agency.</li>
+</ol>
+</li>
+<li data-num="2.4" id="i-2-4">
+<p>This report is to include all cannabis sent domestically to another person / company authorized to receive it (such as through a Medicinal Cannabis Licence with Cultivation / Manufacture activity specified), or any exported product.</p>
+</li>
+<li data-num="2.5" id="i-2-5">
+<p>A Chain of Custody document shall be kept for all materials in / out.</p>
+<ol class="num-ol">
+<li data-num="2.5.1" id="i-2-5-1">One copy shall be kept by the receiver.</li>
+<li data-num="2.5.2" id="i-2-5-2">Another copy should be photographed / scanned and sent to the sender.</li>
+</ol>
+</li>
+<li data-num="2.6" id="i-2-6">
+<p>An additional annual stock-take of all cannabis biomass (wet / dry / seeds / plants / mothers etc) shall be conducted by, or reported to for sign-off by, a named Responsible Person on the License. This is to take place as of 1st January each year, reported by 31st Jan to the Agency. A template that can be used is available under the Additional Items section.</p>
+</li>
+<li data-num="2.7" id="i-2-7">
+<p>A printed copy of the version of these SOPs that has been authorized for use by the Medicinal Cannabis Agency is to remain on-site at all times.</p>
+</li>
+<li data-num="2.8" id="i-2-8">
+<p>Documents such as SOPs, Floorplan etc shall always include a version number. This may be in the form of Semantic Versioning (Major.Minor.Patch) format, or as described in ISO 8601.</p>
+</li>
+</ol>
+<h3 id="3-incident-management">3. Incident management</h3>
+<ol class="num-ol">
+<li data-num="3.1" id="i-3-1">
+<p>If an incident relating to the security of the facility such as a security camera being obstructed / non-operational, an attempted break-in is noticed, the exterior of the Facility is defaced or unauthorised activity inside the Secure Facility is identified, the Incident Registry shall be completed immediately by the staff who noticed the incident.</p>
+</li>
+<li data-num="3.2" id="i-3-2">
+<p>Enter the details of the Incident in the Incident Registry and report the Incident to the named Responsible Person on the Medicinal Cannabis Licence immediately.</p>
+<ol class="num-ol">
+<li data-num="3.2.1" id="i-3-2-1">Include as many details as possible. As a minimum, the date and time the incident was found, who reported the incident and a detailed account of what happened is required.</li>
+</ol>
+</li>
+<li data-num="3.3" id="i-3-3">
+<p>Take immediate corrective action to resolve the incident and limit any further exposure, such as clearing the obstruction from the security camera, requesting an electrician visit site to repair the non-operational device, or a builder to repair any attempted break-in damage.</p>
+</li>
+<li data-num="3.4" id="i-3-4">
+<p>Review CCTV footage to establish the cause of the incident. Several days footage may need to be reviewed to establish if the premises are under surveillance in preparation for an attempted break-in.</p>
+</li>
+<li data-num="3.5" id="i-3-5">
+<p>Review door access logs to determine if there has been any unauthorised access. Record review in the Incident Registry.</p>
+<ol class="num-ol">
+<li data-num="3.5.1" id="i-3-5-1">If any unauthorised access has been detected, complete a stock take of all cannabis materials, including plants / clones and details noted in the incident.</li>
+</ol>
+</li>
+<li data-num="3.6" id="i-3-6">
+<p>Identify and implement actions to prevent a re-occurrence of the Incident if possible.</p>
+</li>
+<li data-num="3.7" id="i-3-7">
+<p>Report any incidents such as an attempted break-in or other similar event that may involve the attempted removal / diversion of restricted cannabis biomass from the Facility, to the Director General of Health, Ministry of Health, and the New Zealand Police.</p>
+</li>
+</ol>
+<h3 id="4-record-adjustment">4. Record adjustment</h3>
+<p>Every time a discrepancy or disposal of biomass occurs, the staff must record an entry to ensure accurate accounting of any and all seeds, cuttings, clones, plants, wet harvest materials and cured / dried flowers.</p>
+<ol class="num-ol">
+<li data-num="4.1" id="i-4-1">
+<p>If the adjustment being made is for dried materials, adjust the quantity of cannabis in the Record Book.</p>
+</li>
+<li data-num="4.2" id="i-4-2">
+<p>Reconcile seeds and packaged cannabis in the secure storage area, noting the variety of seeds, date of harvest of cannabis material etc.</p>
+</li>
+<li data-num="4.3" id="i-4-3">
+<p>If any cannabis is missing, the Responsible Personnel shall log an incident in the Incident Registry and immediately notify the Director General of Health, Ministry of Health, and the New Zealand Police.</p>
+</li>
+<li data-num="4.4" id="i-4-4">
+<p>Review CCTV footage and Access logs to try to identify how and when cannabis was diverted. Record the investigation in the Incident Registry.</p>
+</li>
+<li data-num="4.5" id="i-4-5">
+<p>Identify and implement preventative actions to prevent a recurrence.</p>
+</li>
+</ol>
+<h3 id="5-recall-return-of-biomass">5. Recall / return of biomass</h3>
+<p>In the event a recall or return of biomass is deemed necessary, a manifest will be provided by the returning entity with the weighed amounts, season details, and information regarding the requirement for the return / recall of the biomass.</p>
+<p>Recalled / returned biomass is expected to have remained within New Zealand for the purposes of this document, until such a time as a Medicinal Cannabis Agency - Supply licence is obtained. If the cannabis has been exported by another licence holder, any recall of the exported material will be the responsibility of the exporter. This process will be followed once the cannabis is returned to New Zealand. As such the Recall / return of biomass process should be viewed through that perspective.</p>
+<ol class="num-ol">
+<li data-num="5.1" id="i-5-1">
+<p>Recalled / returned biomass will have Transporting Personnel arranged by the sending entity. However this may require Authorized Personnel to attend a 3rd-party location and escort the Transporting Personnel.</p>
+</li>
+<li data-num="5.2" id="i-5-2">
+<p>A shipping manifest should always be obtained prior to leaving the 3rd-party site by the Transporting Personnel.</p>
+</li>
+<li data-num="5.3" id="i-5-3">
+<p>Staff shall be available for receiving the returned / recalled materials to the Secure Facility in keeping with the Sending / Receiving biomass process.</p>
+</li>
+<li data-num="5.4" id="i-5-4">
+<p>Weigh the biomass immediately once received at the Secure Facility and reconcile against the shipping manifest.</p>
+</li>
+<li data-num="5.5" id="i-5-5">
+<p>Sign the manifest and send a copy to the sender if required.</p>
+</li>
+<li data-num="5.6" id="i-5-6">
+<p>The recalled / returned biomass shall need to be assessed by staff upon return to the Facility, prior to being accepted back into any stock stored in the secure storage area, or alternatively disposed of immediately in accordance with the Disposal of biomass process.</p>
+</li>
+</ol>
+<h3 id="6-disposal-of-biomass">6. Disposal of biomass</h3>
+<p>Any clones or seedlings that fail to take root, die off for any other reason, or are simply discarded after the seedlings for a season have been chosen, will need to be disposed of. When disposed of, any applicable substrate must also be included for disposal.</p>
+<p>This same procedure applies to biowaste taken from the plants in the middle of a growth season, such as to fan leaves that are removed, or branches that are pruned.</p>
+<ol class="num-ol">
+<li data-num="6.1" id="i-6-1">
+<p>Where there is a small amount of biomass that can be removed, the cultivator should remove it by hand and take it back to a marked cannabis waste bin.</p>
+</li>
+<li data-num="6.2" id="i-6-2">
+<p>Where there is a large amount of biomass such as during defoliation or harvest, the cultivator should place discarded biomass in a marked cannabis waste bin. This bin is lined with a bag to assist with transport/disposal of the discarded biomass. Only cannabis biomass is to be placed into this tote.</p>
+<ol class="num-ol">
+<li data-num="6.2.1" id="i-6-2-1">This is not to be left unattended at any time, and must be immediately returned to a lockable cannabis waste bin upon completion of the task.</li>
+</ol>
+</li>
+<li data-num="6.3" id="i-6-3">
+<p>No discarded biomass is to be placed in the bins marked for general rubbish disposal.</p>
+</li>
+<li data-num="6.4" id="i-6-4">
+<p>Record all clone / seedling / plants that are disposed of in the Record Book following the Record Book adjustment process for proper accounting of all plants.</p>
+</li>
+<li data-num="6.5" id="i-6-5">
+<p>When it is time to dispose of the biomass and render it unusable, unrecoverable, and unrecognizable, take the bag out of the secure bin for shredding. Put a replacement bin liner in the lockable bin as soon as the previous bag has been removed.</p>
+</li>
+<li data-num="6.6" id="i-6-6">
+<p>Take the contents of the bag containing the discarded cannabis biomass and put it through the mulcher. The shredded biomass is collected on the other side into a new temporary bin / bag.</p>
+</li>
+<li data-num="6.7" id="i-6-7">
+<p>Add an additional 100% mass of soil / coco coir / kitty litter / sawdust to the shredded biomass and mix.</p>
+<ol class="num-ol">
+<li data-num="6.7.1" id="i-6-7-1">If the substrate is rockwool, the use of coco coir is permitted as an additive. If the substrate was coco coir, then an alternative such as soil, kitty litter, kitchen food scraps, oil etc must be used instead so that the rendered substrate is not recognizable by any parties that would attempt diversion.</li>
+</ol>
+</li>
+<li data-num="6.8" id="i-6-8">
+<p>Place the resulting shredded and mixed biowaste which has now been rendered unusable, unrecoverable, and unrecognizable into the general waste for disposal. This bin should remain locked while on-site until such a time at which it is able to be put out for collection with general council waste.</p>
+</li>
+</ol>
+<h3 id="7-general-rubbish-disposal">7. General rubbish disposal</h3>
+<ol class="num-ol">
+<li data-num="7.1" id="i-7-1">
+<p>General rubbish materials that do not consist of Discarded biomass (such as staff lunch, packaging etc.) are to be placed in rubbish bins separately in keeping with the regional council rubbish collection.</p>
+</li>
+<li data-num="7.2" id="i-7-2">
+<p><strong>Rubbish placed in general rubbish bins must not ever contain any cannabis biomass.</strong></p>
+</li>
+<li data-num="7.3" id="i-7-3">
+<p>Recycling may also be undertaken in separately marked bins.</p>
+</li>
+<li data-num="7.4" id="i-7-4">
+<p>Any bin that is not marked for General Rubbish or for Recycling is presumed to be a Discarded biomass bin and should be treated as such, to ensure that no cannabis biomass is ever put out for a general rubbish collection. In the event an issue with a label occurs, at the soonest possible time this should be replaced and the bins clearly marked.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="maintenance">Maintenance</h2>
+<h3 id="8-cleaning">8. Cleaning</h3>
+<ol class="num-ol">
+<li data-num="8.1" id="i-8-1">
+<p>Cleaning of the facility may only be undertaken by staff with access clearance to the relevant areas.</p>
+</li>
+<li data-num="8.2" id="i-8-2">
+<p>Where specialist cleaning is required, external contractors may be engaged. All attempts should be made for in-house cleaning as a priority, before engaging these external contractors.</p>
+<ol class="num-ol">
+<li data-num="8.2.1" id="i-8-2-1">They will need to be supervised appropriately during their time on-site.</li>
+<li data-num="8.2.2" id="i-8-2-2">Site access should be minimized along with exposure to any cannabis materials.</li>
+</ol>
+</li>
+<li data-num="8.3" id="i-8-3">
+<p>When emptying any vacuum / rubbish bag, ensure it is placed into the appropriate bin inside the current room, depending on if the contents contains cannabis materials or not.</p>
+</li>
+<li data-num="8.4" id="i-8-4">
+<p>Additional care should be taken while cleaning the floor, walls, carbon / HEPA filters etc such that no contaminants / bacteria could come into contact with the plants.</p>
+</li>
+</ol>
+<h3 id="9-scheduled-unscheduled-maintenance">9. Scheduled / unscheduled maintenance</h3>
+<p>There are items such as CO2 canisters that need to be replaced as / when they are running low, or batteries in IoT Sensors need changing.</p>
+<ol class="num-ol">
+<li data-num="9.1" id="i-9-1">
+<p><strong>At no time shall security cameras be battery operated. Cameras must be cabled, with power provided through PoE.</strong></p>
+</li>
+<li data-num="9.2" id="i-9-2">
+<p>Batteries on UPS should be checked regularly to ensure they hold capacity.</p>
+</li>
+<li data-num="9.3" id="i-9-3">
+<p>Act on and remedy alerts as soon as possible. Key staff should be notified through an alerts system to their cellphone that the sensor batteries are getting low (&lt;10%). Additionally alerts may be given if a sensor provides the same reading consecutively too many times and is deemed faulty.</p>
+</li>
+</ol>
+<h4 id="battery-replacement">Battery replacement</h4>
+<ol start="4" class="num-ol">
+<li data-num="9.4" id="i-9-4">
+<p>Ensure the correct battery types are ready and available prior to commencing maintenance.</p>
+</li>
+<li data-num="9.5" id="i-9-5">
+<p>Remove the devices' battery protection, take the old batteries out of the device and place them to one side so they are not mixed up with fresh batteries.</p>
+</li>
+<li data-num="9.6" id="i-9-6">
+<p>Install new batteries immediately, then replace the protective cover.</p>
+</li>
+<li data-num="9.7" id="i-9-7">
+<p>Confirm that the device has shown it is operational again.</p>
+</li>
+<li data-num="9.8" id="i-9-8">
+<p>Dispose of the old batteries in a general waste bin.</p>
+</li>
+</ol>
+<h4 id="co2-maintenance">CO2 maintenance</h4>
+<ol start="9" class="num-ol">
+<li data-num="9.9" id="i-9-9">
+<p>For CO2 bottle replacement, the Authorized Personnel shall ensure that there is sufficient stock ready for use and make arrangements for a replacement order if the stock levels are getting low.</p>
+</li>
+<li data-num="9.10" id="i-9-10">
+<p>Check the ambient CO2 readings in the area in which the bottles are stored to ensure there are no leaks and it is safe to continue.</p>
+<ol class="num-ol">
+<li data-num="9.10.1" id="i-9-10-1">If the levels are elevated, the area should be evacuated, aired out immediately, and responsible persons notified.</li>
+</ol>
+</li>
+<li data-num="9.11" id="i-9-11">
+<p>Bring the new bottle into the applicable room and place it next to the existing empty CO2 bottle.</p>
+</li>
+<li data-num="9.12" id="i-9-12">
+<p>Turn off the bottle being replaced. Decouple the regulator from the empty CO2 bottle, and place onto the new CO2 bottle, ensuring a tight seal.</p>
+</li>
+<li data-num="9.13" id="i-9-13">
+<p>Turn on the new CO2 bottle a quarter turn, to visibly confirm that it is showing a pressured feed through the regulator.</p>
+</li>
+<li data-num="9.14" id="i-9-14">
+<p>Remove the old bottle from the area and place it ready for removal from the premises.</p>
+</li>
+</ol>
+<h3 id="10-instrument-and-sensor-cleaning-calibration">10. Instrument and sensor cleaning / calibration</h3>
+<ol class="num-ol">
+<li data-num="10.1" id="i-10-1">
+<p>There are a variety of sensors and instruments such as pH / TDS sensors that need to be regularly calibrated, including but not limited to:</p>
+<ul>
+<li>pH probes</li>
+<li>TDS / EC meters</li>
+<li>CO2 sensors</li>
+<li>CO2 regulators / valves</li>
+<li>Flowmeters</li>
+<li>Peristaltic pumps</li>
+<li>Float sensors</li>
+<li>Reservoir pumps</li>
+<li>Reverse osmosis filtration</li>
+</ul>
+</li>
+<li data-num="10.2" id="i-10-2">
+<p>Visually inspect all equipment weekly.</p>
+</li>
+<li data-num="10.3" id="i-10-3">
+<p>Calibrate all sensors where possible on a seasonal basis as is required, with pH and TDS / EC meters potentially being recalibrated more frequently (monthly) in accordance with manufacturer guidance.</p>
+</li>
+<li data-num="10.4" id="i-10-4">
+<p>Additional care shall be taken to ensure that the temperature of calibration liquid is also maintained during calibration in accordance with manufacturer guidance.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="site-access-security">Site access / security</h2>
+<h3 id="11-inspections-and-testing">11. Inspections and testing</h3>
+<ol class="num-ol">
+<li data-num="11.1" id="i-11-1">
+<p>Daily perimeter checks should be undertaken to ensure that there has been no attempted break-ins, and an end-of-day check conducted prior to the last staff member leaving the site that consists of confirming:</p>
+<ol class="num-ol">
+<li data-num="11.1.1" id="i-11-1-1">Personnel doors are closed/locked</li>
+<li data-num="11.1.2" id="i-11-1-2">Roller doors are latched/locked</li>
+<li data-num="11.1.3" id="i-11-1-3">Windows are shut and latched</li>
+<li data-num="11.1.4" id="i-11-1-4">CCTV is operational and recording</li>
+<li data-num="11.1.5" id="i-11-1-5">Alarms / sirens are armed</li>
+<li data-num="11.1.6" id="i-11-1-6">Perimeter check completed</li>
+</ol>
+</li>
+<li data-num="11.2" id="i-11-2">
+<p>Inspect all security lights and CCTV cameras at the perimeter to ensure these are operational. This may be done remotely through the CCTV system.</p>
+</li>
+<li data-num="11.3" id="i-11-3">
+<p>Regular checks should take place to ensure there is nothing stored outside of the premises (such as a ladder) that may give access to the roof.</p>
+</li>
+<li data-num="11.4" id="i-11-4">
+<p>Manually open/close/latch/lock all doors and windows during testing to ensure these are operational and undamaged.</p>
+</li>
+<li data-num="11.5" id="i-11-5">
+<p>If anything is noted, immediate remediation should take place to ensure the minimization of any potential for diversion of cannabis materials.</p>
+</li>
+<li data-num="11.6" id="i-11-6">
+<p>In the event of any issues relating to access to cannabis materials, this will need to be logged appropriately, with the New Zealand Police being notified immediately, and the Director General of Health shall be notified within 3 days as required by Regulation 57.</p>
+</li>
+<li data-num="11.7" id="i-11-7">
+<p>Conduct a review, test, and audit of the site security principles every 3 months to ensure that all security devices are operational (such as door sensors, locks, key fobs etc.) and take immediate action to resolve any arising issues.</p>
+</li>
+<li data-num="11.8" id="i-11-8">
+<p>Annual inspections by MOH are facilitated by escorting the visiting officers throughout the facility. Inspecting officers are classed as Guests for the purposes of adherence to SOP.</p>
+</li>
+<li data-num="11.9" id="i-11-9">
+<p>Stock takes are to occur at least quarterly, of all cannabis biomass (wet / dry / seeds / plants / mothers etc). Should any discrepancies arise, the Incident Management / Record Adjustment process is to be followed. This may be completed by any appropriately authorized staff member.</p>
+</li>
+</ol>
+<h3 id="12-backups-remote-access">12. Backups / remote access</h3>
+<ol class="num-ol">
+<li data-num="12.1" id="i-12-1">
+<p>All video surveillance is stored on-site at the facility on a server with at least RAID-5 drive-failure redundancy.</p>
+</li>
+<li data-num="12.2" id="i-12-2">
+<p>Remote access may be available for authorized staff only, at the discretion of the named <em>Responsible Person</em> on the license. This remote access shall only ever be &quot;view only&quot;, with no capacity to delete / remove / alter video.</p>
+</li>
+<li data-num="12.3" id="i-12-3">
+<p>A regular backup regime should be conducted with off-site backups for critical data, such as records of cannabis materials. This is to permit a full and complete restore of records in the event of a catastrophic &quot;cloud&quot; failure.</p>
+</li>
+<li data-num="12.4" id="i-12-4">
+<p>All cannabis tracking related records shall be kept for a minimum of 5 years time, with the expectation of longer record-keeping being possible. This includes any digital documents, as well as scanned / photographed records. If tracking is taking place within the GRACe Portal, this can be included in a properly defined Home Assistant backup regime for offsite storage, however it is not the default and must be configured by the <em>Responsible Person</em>.</p>
+</li>
+</ol>
+<h3 id="13-general-site-standards-expectations">13. General site standards / expectations</h3>
+<p>Personal belongings, room labelling, and the odour containment build requirements are covered in Chapter 1, Building security requirements. The standards below apply to day-to-day operation.</p>
+<ol class="num-ol">
+<li data-num="13.1" id="i-13-1">
+<p>Replace shoes or use overboots where possible before entering the growrooms, to ensure no external contaminants / pests are walked in. This is the primary way that pests are brought into a facility.</p>
+</li>
+<li data-num="13.2" id="i-13-2">
+<p>Hands should be immediately washed with soapy water when entering the facility, or after every exit / break.</p>
+</li>
+<li data-num="13.3" id="i-13-3">
+<p>Nitrile gloves are to be worn at all times.</p>
+<ol class="num-ol">
+<li data-num="13.3.1" id="i-13-3-1">Additional care should be taken to ensure the gloves have not broken and are also clean / sterile when handling seeds, clones, plants and harvested biomass.</li>
+<li data-num="13.3.2" id="i-13-3-2">Gloves should be replaced after every exit / break as well as after handling cleaning solutions and nutrients. This is to prevent chemicals ending up near plants, and especially to ensure that nutrients / cleaning products do not come into contact with skin.</li>
+<li data-num="13.3.3" id="i-13-3-3">Where staff are unsure if they should change gloves, assume they should always be changed.</li>
+</ol>
+</li>
+<li data-num="13.4" id="i-13-4">
+<p>Use knives, scissors and other cutting utensils for the plants from one room only. They are not to be used elsewhere, or on plants of another room. Similarly for the care of the Mother plants, the knives, scissors and other cutting utensils are not to be removed from the <em>mothering tent or nursery area</em>.</p>
+</li>
+<li data-num="13.5" id="i-13-5">
+<p>When completed, the scissors shall be returned to their storage container, to be cleaned with an alcohol-based disinfectant solution such as isopropyl alcohol / bleach.</p>
+</li>
+<li data-num="13.6" id="i-13-6">
+<p>Use a different set of tools for trimming / manicuring during harvesting. This may simply be secateurs for cutting the trunk of the plant.</p>
+</li>
+<li data-num="13.7" id="i-13-7">
+<p>Any staff suffering from illness or cold-like symptoms such as coughing, sneezing, are temporarily prohibited from working at the Secure Facility, so that any airborne or touch-based disease is not transmitted through the cannabis biomass. This is especially important with sneezing as the primary manner in which bacteria may come into contact with plants and contaminate a growroom, which may cause a failure of microbial load on the finished product.</p>
+</li>
+<li data-num="13.8" id="i-13-8">
+<p>All utensils, tubs, barrels, buckets, and measuring equipment is to be cleaned after use to ensure a high standard of hygiene. Where practical this should be immediately actioned, however sometimes it may be necessary to complete this at the end of the day.</p>
+</li>
+<li data-num="13.9" id="i-13-9">
+<p>The room sealing and odour containment described in Chapter 1 must be maintained in day-to-day operation. Room pressure levels should be tested and compared regularly to ensure a sufficient air pressure (10-15 Pa) difference. This can be done continuously with the use of an M5Stack ENV Sensor or similar.</p>
+</li>
+<li data-num="13.10" id="i-13-10">
+<p>Air inside any rooms where cannabis materials will be held must also be internally scrubbed with a carbon filter in order to remove as much odour as possible, and a HEPA filter to remove bacteria. Although filters may be &quot;free standing&quot;, their location shall be noted on any floorplan sent through to the Medicinal Cannabis Agency.</p>
+</li>
+</ol>
+<h3 id="14-general-site-security-principles">14. General site security principles</h3>
+<p>The physical and building security requirements (signage, access control, doors, locks, alarms, windows, roller doors, and cameras) are set out in full in Chapter 1, Building security requirements. The principles below are the operational security requirements that sit alongside them.</p>
+<ol class="num-ol">
+<li data-num="14.1" id="i-14-1">
+<p>If staff are coerced to open the door by force or threat of violence, they must take into account their own safety and not resist. They are to comply, open the Cultivation Facility under duress, and allow the intruder in. If possible to do so safely - press the first available distress button. Pressing of the button activates the silent alarm which notifies all responsible staff, who are to contact 111 emergency services immediately.</p>
+</li>
+<li data-num="14.2" id="i-14-2">
+<p>Responsible Personnel shall notify Police of their proposed locations during build-out, prior to site-audit from the Medicinal Cannabis Agency. This usually takes the form of an in-person visit and opening a file stating the nature of activities that will be conducted on-site.</p>
+<ol class="num-ol">
+<li data-num="14.2.1" id="i-14-2-1">If this has not already been undertaken, it should retrospectively be done prior to the licence holders next annual on-site audit.</li>
+</ol>
+</li>
+</ol>
+<h3 id="15-staff-access">15. Staff access</h3>
+<ol class="num-ol">
+<li data-num="15.1" id="i-15-1">
+<p>Key staff that have a direct need to access the site (such as cultivation technicians) will be issued with their own unique set of credentials to access the facility. These access credentials may take the form of one or more unique + private PIN numbers for access to the Secure Facility, key fobs / NFC tags / HID Prox cards, and may also employ fingerprint identification.</p>
+</li>
+<li data-num="15.2" id="i-15-2">
+<p>At no point should any unauthorized person be able to access the facility by the use of a single access method such as finding a lost keycard.</p>
+</li>
+<li data-num="15.3" id="i-15-3">
+<p>Access to the facility is only to be provided to staff who must have regular / unattended access, and not to other general supporting staff such as accounting personnel etc.</p>
+</li>
+<li data-num="15.4" id="i-15-4">
+<p>It must be immediately reported if a unique PIN is forgotten / becomes known by someone else, as well as if any key or keyfob / NFC tag lost, missing or stolen.</p>
+<ol class="num-ol">
+<li data-num="15.4.1" id="i-15-4-1">The affected access credentials are to be revoked without delay, and new credentials issued. The access permission is cancelled in the Security System.</li>
+<li data-num="15.4.2" id="i-15-4-2">In the event a physical key is impacted, the lock or lock barrel shall be replaced.</li>
+<li data-num="15.4.3" id="i-15-4-3">Alternatively if the padlock is a combination lock, the code shall be changed.</li>
+</ol>
+</li>
+<li data-num="15.5" id="i-15-5">
+<p>The security access logs will be reviewed by staff, to confirm that no unauthorized access has taken place with their access credentials, such as reviewing video footage of the last time their credentials were used.</p>
+</li>
+</ol>
+<h4 id="staff-termination-departure">Staff termination / departure</h4>
+<ol start="6" class="num-ol">
+<li data-num="15.6" id="i-15-6">
+<p>In the event of a staff termination or resignation, at the completion of any notice-period or on the final day of employment, all credentials shall be revoked.</p>
+</li>
+<li data-num="15.7" id="i-15-7">
+<p>Credentials may include (but are not limited to) any door PINs, keyfobs, automation software credentials, or fingerprint access as applicable.</p>
+</li>
+<li data-num="15.8" id="i-15-8">
+<p>In the event that the staff member has physical keys (for example to a gate lock), these are to be returned. In the event that the staff member is unable to return the keys, the lock barrel should be replaced immediately.</p>
+</li>
+<li data-num="15.9" id="i-15-9">
+<p>Any padlocks, such as that for gates or internal waste disposal bins, shall be proactively replaced in the event of staff termination / departure.</p>
+<ol class="num-ol">
+<li data-num="15.9.1" id="i-15-9-1">The keys for any padlocks that secure waste bins internally shall always be replaced as part of staff termination / departure. Any combination locks should have their combination changed.</li>
+</ol>
+</li>
+</ol>
+<h3 id="16-guest-other-visitor-access">16. Guest / other visitor access</h3>
+<ol class="num-ol">
+<li data-num="16.1" id="i-16-1">
+<p>Contractors, Couriers, Builders, Electricians, MOH Inspectors or other such unauthorized personnel who temporarily need to enter the Facility are considered to be <em>Guests</em> while on-site.</p>
+</li>
+<li data-num="16.2" id="i-16-2">
+<p>All visits by Guests should be scheduled in advance to ensure appropriate staffing is available to escort the guest as required.</p>
+</li>
+<li data-num="16.3" id="i-16-3">
+<p><em>Guests</em> are to sign in on arrival, noting date and time of their arrival as well as a contact phone number in case they need to be contacted later.</p>
+<ol class="num-ol">
+<li data-num="16.3.1" id="i-16-3-1">It is recommended to use a digital sign-in form such as an <a href="https://github.com/Chill-Division/visitors">open-source visitor database from Chill Division</a>.</li>
+</ol>
+</li>
+<li data-num="16.4" id="i-16-4">
+<p>All <em>Guests</em> are informed that items taken into the Facility may be subject to search before they leave the premises.</p>
+</li>
+<li data-num="16.5" id="i-16-5">
+<p>Guests must be escorted by staff whenever they access the Facility, unless there is NO cannabis biomass on site (e.g., during the initial build / setup of the premises).</p>
+</li>
+<li data-num="16.6" id="i-16-6">
+<p>Guests are not permitted to be issued any form of security clearance such as PINs or key fobs.</p>
+</li>
+<li data-num="16.7" id="i-16-7">
+<p>If applicable, it is recommended that Contractors bring their vehicle inside the Loading Bay and load / unload any applicable work tools and materials for use during any maintenance being carried out.</p>
+</li>
+<li data-num="16.8" id="i-16-8">
+<p>Where a Guest / Contractor needs to perform maintenance inside an area such as a Growroom when there is cannabis present, the escorting staff member must remain with them for the duration of the visit. In the event the staff member needs to leave the room, the Guest / Contractor must also leave with them and wait in an area that does not have any access to cannabis <em>biomass</em> (such as a lunchroom / kitchen).</p>
+</li>
+<li data-num="16.9" id="i-16-9">
+<p>Contractors that need to take tools into the facility to perform maintenance are encouraged to take a minimum of tools needed to perform the job. Contractors are permitted to take toolboxes etc into the facility but will be informed these may be subject to search before they exit the premises.</p>
+</li>
+<li data-num="16.10" id="i-16-10">
+<p>It is expected that guests will maintain the same high level of health and hygiene standards as any staff member would. The escorting staff must brief the visiting guests on health and hygiene standards and ensure that gloves and other PPE items are worn and all other health / hygiene measures are being followed at all times.</p>
+</li>
+<li data-num="16.11" id="i-16-11">
+<p>Before guests leave the premises, they are to sign out of the premises and date and time of their departure from site.</p>
+</li>
+<li data-num="16.12" id="i-16-12">
+<p>A search of any toolboxes or bags or other items taken into the Facility that may conceal cannabis is to be conducted if appropriate before the guest departs. The need to conduct a search will be assessed based on the duration of the visit, the potential access to cannabis, and any other relevant circumstances.</p>
+</li>
+</ol>
+<h3 id="17-access-logging-and-surveillance-review">17. Access logging and surveillance review</h3>
+<ol class="num-ol">
+<li data-num="17.1" id="i-17-1">
+<p>Records of access to the Facility are kept for a period of 30 days and will be produced at the request of the Director General of Health, Ministry of Health or New Zealand Police. This includes visitors and video footage.</p>
+</li>
+<li data-num="17.2" id="i-17-2">
+<p>All records are maintained through electronic locks with unique identification methods for all staff. These records are stored on the access control server and are periodically backed up off-site.</p>
+</li>
+<li data-num="17.3" id="i-17-3">
+<p>Lock states are recorded and stored for the staff who opened the lock / door. This is done by uniquely identifying the PIN that was entered, or the key fob / fingerprint that was scanned. The door-state sensors required under Chapter 1 also record when doors are opened and closed.</p>
+</li>
+<li data-num="17.4" id="i-17-4">
+<p>A review shall be conducted on a weekly basis of video surveillance with the primary objective of detecting any other observers and behaviour that may need a proactive response, as well as detecting any anomalies with the cameras.</p>
+</li>
+</ol>
+<h3 id="18-encryption-levels">18. Encryption levels</h3>
+<ol class="num-ol">
+<li data-num="18.1" id="i-18-1">
+<p>All security related wireless / IoT devices are to utilize at least 128-bit AES encryption or similar equivalent.</p>
+</li>
+<li data-num="18.2" id="i-18-2">
+<p>Unsecured devices are not permitted on the network, with unencrypted communications.</p>
+</li>
+<li data-num="18.3" id="i-18-3">
+<p>This includes Z-wave, Zigbee, and 802.11x wireless devices.</p>
+</li>
+</ol>
+<h3 id="19-video-surveillance">19. Video surveillance</h3>
+<p>Camera placement, coverage, resolution and recording requirements are set out in Chapter 1, Building security requirements. This section covers the surveillance system itself.</p>
+<ol class="num-ol">
+<li data-num="19.1" id="i-19-1">
+<p>Video surveillance is to be stored on a server with at least one hard drive's worth of redundancy, such as a RAID-1 / RAID-5 method.</p>
+</li>
+<li data-num="19.2" id="i-19-2">
+<p>The surveillance system is physically secured in such a way that the video surveillance and storage server is not easily removable from the Facility, for example being elevated off the ground out of general reach or behind further lock and key in a server-cabinet.</p>
+</li>
+<li data-num="19.3" id="i-19-3">
+<p>The surveillance system is to be operated on a UPS Power Supply such that in the event of a complete power failure to the site the relevant equipment is able to continue to operate for a period of no less than 60 minutes. This includes PoE switches that may be daisy-chained and power the PoE cameras.</p>
+<ol class="num-ol">
+<li data-num="19.3.1" id="i-19-3-1">All cameras must be able to continue to operate and record to the video surveillance system during this time.</li>
+</ol>
+</li>
+<li data-num="19.4" id="i-19-4">
+<p>Staff shall be notified automatically in the event of a power failure so that staff can immediately attend the Secure Facility and ensure the operation of a backup generator with the intention of providing power to the surveillance system.</p>
+</li>
+<li data-num="19.5" id="i-19-5">
+<p>Video surveillance is only accessible for review by authorized staff. In the event that a request from the New Zealand Police, Ministry of Health or Director General is received to review the footage, the named Responsible Person on the licence or other nominated staff is to review the footage by plugging in a laptop / keyboard / mouse (as applicable) and connecting to the Network Video Recording server. Footage can then be provided to the New Zealand Police, Ministry of Health or Director General via a USB drive.</p>
+</li>
+<li data-num="19.6" id="i-19-6">
+<p>Video cameras should also have the capacity to detect motion and immediately notify the appropriate staff, if separate PIR sensors are not utilised.</p>
+</li>
+</ol>
+<h3 id="20-staff-onboarding-and-policy-upkeep">20. Staff onboarding and policy upkeep</h3>
+<ol class="num-ol">
+<li data-num="20.1" id="i-20-1">
+<p>Prior to any access credentials being issued, staff shall go through a Ministry of Justice Criminal Record and credit checks, to confirm they are suitable to work with a controlled substance.</p>
+</li>
+<li data-num="20.2" id="i-20-2">
+<p>All company directors and named Responsible people will undergo a Criminal Record check as part of the licence renewal process annually.</p>
+</li>
+<li data-num="20.3" id="i-20-3">
+<p>Due to the expected size of the Facility where restricted cannabis biomass is located, any staff that are not specifically required (for example, accounting staff) would not be permitted unattended access to the Facility.</p>
+</li>
+<li data-num="20.4" id="i-20-4">
+<p>Any staff that do not have their own credentials / unattended access (such as accounting staff) are to be treated as Guests should any unforeseen circumstances arise that requires them to attend site, in keeping with the visitor access procedure.</p>
+</li>
+<li data-num="20.5" id="i-20-5">
+<p>Newly onboarded staff that are to be provided with their own credentials for unattended access to the facility will be provided with a copy of this document to read and acknowledge.</p>
+</li>
+<li data-num="20.6" id="i-20-6">
+<p>Newly onboarded staff will undergo training in these Security and Standard Operational Procedures. Staff will work under supervision until assessed as competent.</p>
+</li>
+<li data-num="20.7" id="i-20-7">
+<p>All cultivation-related staff will be notified of amendments / changes made to this document, and an annual training will be conducted with all relevant staff to ensure policies and procedures remain at the forefront of their attention.</p>
+</li>
+<li data-num="20.8" id="i-20-8">
+<p>Any changes to SOP/Manual affecting day to day procedures and/or workflows or processes will necessitate a training session. These training sessions are over and above the regular annual training sessions. All staff are to be assessed on competency and understanding of the changes at the end of every such session.</p>
+</li>
+<li data-num="20.9" id="i-20-9">
+<p>Any staff members found to be in need of further training as a result of the competency assessment will get an additional, one-on-one, training session scheduled with appropriate senior staff.</p>
+</li>
+</ol>
+<h3 id="21-staff-personal-security">21. Staff personal security</h3>
+<p>This section describes some best-practices to aid staff in their own personal security while working at the Facility. The idea is to minimize any possibility for somebody to find out the physical location of where staff live/work. While complete secrecy is unlikely, any additional barriers to deter or delay a would-be attacker digitally are also very important.</p>
+<p>All recommendations made should be weighed up carefully by staff on an individual basis, in accordance with their own risk appetite. Brief explanations for reasoning are provided for each recommendation where possible/necessary.</p>
+<ol class="num-ol">
+<li data-num="21.1" id="i-21-1">
+<p>If at any time staff feel unsafe, they should immediately contact Police by dialing 111 from the nearest phone.</p>
+<ol class="num-ol">
+<li data-num="21.1.1" id="i-21-1-1">If staff are threatened at all, even if they don't feel in any immediate danger themselves, they should advise Responsible Persons who can ascertain the best course of action (including but not limited to making a report to Police).</li>
+<li data-num="21.1.2" id="i-21-1-2">If staff are unable to speak with Police due to any incriminating circumstances, they can call Crime Stoppers on 0800 555 111. Note that Crime Stoppers cannot act immediately and this should only be for non-critical reporting, and reporting that is not time-sensitive.</li>
+<li data-num="21.1.3" id="i-21-1-3">Any details that staff are able to keep, such as details of the threat, messages / screenshots / call recordings etc should be kept for later analysis by Police.</li>
+</ol>
+</li>
+<li data-num="21.2" id="i-21-2">
+<p>Any directors and shareholders should amend their address on all listings with the Companies Office etc, and utilize either their accountant or lawyer for mail. Companies Office listings are public and can be an easy way to track down either a facility or a staff members' home address.</p>
+<ol class="num-ol">
+<li data-num="21.2.1" id="i-21-2-1">Given the higher profile nature and ease of finding public details for shareholders and directors, their partners/spouses should also be briefed on changing any public company records etc.</li>
+</ol>
+</li>
+<li data-num="21.3" id="i-21-3">
+<p>Staff should consider the address used for vehicle registration, and update it to be that of a family member, lawyer, or similar.</p>
+<ol class="num-ol">
+<li data-num="21.3.1" id="i-21-3-1">A would-be attacker who has found a facility location could sit and wait at the gates, noting vehicle registration details, and obtain staff home address details through this, which may be used maliciously.</li>
+</ol>
+</li>
+<li data-num="21.4" id="i-21-4">
+<p>Staff should be mindful of location sharing online, especially in social media applications such as Instagram, Snapchat, Facebook, Messenger etc.</p>
+<ol class="num-ol">
+<li data-num="21.4.1" id="i-21-4-1">It is recommended that GPS and location privileges for those applications is disabled by staff on an individual basis on their phone, especially as certain applications will share location with &quot;followers&quot;. Once an individual with malicious intent has been permitted to &quot;follow&quot; the staff member, their location may show up and unknowingly provide the Facility location to the 3rd party with malicious intent.</li>
+</ol>
+</li>
+<li data-num="21.5" id="i-21-5">
+<p>Staff should set social media profiles to a &quot;private by default&quot; setting or similar, that does not publicly make available all their details/photos.</p>
+</li>
+<li data-num="21.6" id="i-21-6">
+<p>Staff should be careful opening links and attachments on their devices. There is a lower risk profile of viruses / trojans / malware injection when conducting these activities on mobile due to the sandboxing that modern Android / iOS devices use. However, that risk is still not zero and staff should undertake semi-regular training using things such as the <a href="https://phishingquiz.withgoogle.com">Google Phishing Quiz</a> to ensure they understand what to look for to keep them safe.</p>
+</li>
+<li data-num="21.7" id="i-21-7">
+<p>Mobile phone numbers are a primary method of identity theft, staff should be cautious sharing their mobile number with anybody from outside of their company until such a time as any individual has been able to be appropriately vetted by the staff member.</p>
+</li>
+<li data-num="21.8" id="i-21-8">
+<p>Any mobile number-porting attempts of a staff members' number will prompt them with an <a href="https://www.tcf.org.nz/digital-living/consumer-info-hub/switching-service-providers/switching-mobile-providers">NZ Telecommunications Forum (TCF) message</a> asking them to confirm their mobile port. If they have not requested this, the staff member must notify the Responsible Persons as soon as possible, and should implicitly decline the number port.</p>
+<ol class="num-ol">
+<li data-num="21.8.1" id="i-21-8-1">Number porting and &quot;sim-jacking&quot; is a common method for identity theft and credential stealing. By responding to the message with an affirmative &quot;NO&quot;, it prevents an attacker from pleading to a mobile carrier they have illegitimately lost their SIM card.</li>
+<li data-num="21.8.2" id="i-21-8-2">Staff should then also contact their mobile provider to advise them of this fraudulent attempt to port their mobile number away.</li>
+</ol>
+</li>
+<li data-num="21.9" id="i-21-9">
+<p>Staff should be mindful of providing either the facility address OR their home address details, in any circumstance.</p>
+<ol class="num-ol">
+<li data-num="21.9.1" id="i-21-9-1">This includes things such as signing up for a service online (such as a media streaming service, or when purchasing goods from a domestic online store such as a vape-shop), as databases online are often breached and details leaked online which can be matched up to an individuals' home or facility address.</li>
+</ol>
+</li>
+<li data-num="21.10" id="i-21-10">
+<p>Staff should not reuse the same PIN for things such as their mobile phone, credit cards, and building security.</p>
+</li>
+<li data-num="21.11" id="i-21-11">
+<p>If staff suspect they are being followed home from a facility, they should detour to a 3rd-party location where they can contact Police. They should not pull into a dead-end street or driveway, but rather pulling over on the roadside may be an option for them to either make a call safely or to allow a driver suspected of malicious intent to pass them.</p>
+</li>
+<li data-num="21.12" id="i-21-12">
+<p>Staff should be mindful of wearing company apparel while outside of the facility, unless it is company merchandise that the public is likely to have been able to purchase / broadly obtain.</p>
+</li>
+<li data-num="21.13" id="i-21-13">
+<p>Staff should be mindful when handing out contact details to people for things such as petitions or filling in any other forms like public guestbooks, as these contact details may be used by somebody maliciously.</p>
+</li>
+<li data-num="21.14" id="i-21-14">
+<p>Staff should be cautious with public birthday celebrations, as this is a prime candidate for identity theft. It is advisable to keep the exact date unspecified when discussing publicly.</p>
+<ol class="num-ol">
+<li data-num="21.14.1" id="i-21-14-1">This also applies to well-wishes for other licence holders and their employees.</li>
+</ol>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="inward-outward-goods">Inward / outward goods</h2>
+<h3 id="22-approved-suppliers">22. Approved suppliers</h3>
+<p>Potential suppliers of Medicinal Cannabis seeds, plants, or flowers must meet minimum requirements to be approved as a supplier.</p>
+<ol class="num-ol">
+<li data-num="22.1" id="i-22-1">
+<p>New Zealand suppliers must hold all appropriate licences as follows:</p>
+<ul>
+<li>Medicinal Cannabis <strong>Seeds</strong> and <strong>Plants</strong> - Medicinal Cannabis Licence with Nursery Activity or Medicinal Cannabis Licence with Cultivation Activity.</li>
+<li>Hemp <strong>Seeds</strong> and <strong>Plants</strong> - Industrial Hemp Licence.</li>
+</ul>
+</li>
+<li data-num="22.2" id="i-22-2">
+<p>Overseas suppliers must be able to legally export Medicinal Cannabis products to New Zealand and guarantee that seeds are not pelleted. To ensure supply, a raw material may have more than one approved supplier.</p>
+</li>
+<li data-num="22.3" id="i-22-3">
+<p>Once all evidence has been provided, the potential supplier's ability to meet requirements is assessed.</p>
+</li>
+<li data-num="22.4" id="i-22-4">
+<p>Factors to be considered before approving a supplier for any materials shall include:</p>
+<ul>
+<li>The capability of the vendor to fulfil the requirements of the proposed purchase order.</li>
+<li>Previous experience of the vendor's ability to produce the product at the required quality level, within the necessary time frame and price.</li>
+<li>The supplier holds all required licences.</li>
+</ul>
+</li>
+<li data-num="22.5" id="i-22-5">
+<p>A supply agreement may be sent to the new Approved Supplier, to document the agreed product requirements and any conditions of purchase.</p>
+</li>
+<li data-num="22.6" id="i-22-6">
+<p>A copy of the agreed specification is saved to the product specification folder for easy reference.</p>
+</li>
+</ol>
+<h3 id="23-approved-recipients">23. Approved recipients</h3>
+<p>A list of all individuals and organisations authorised to receive medicinal cannabis is to be maintained.</p>
+<ol class="num-ol">
+<li data-num="23.1" id="i-23-1">
+<p>Approved recipients include:</p>
+<ul>
+<li>waste contractor details and the employees authorised to collect medicinal cannabis for destruction and disposal</li>
+<li>external laboratories and/or research organisations, and the relevant employees authorised to receive the medicinal cannabis for research activities or testing</li>
+<li>Customer purchasing biomass (Offtake buyer)</li>
+</ul>
+</li>
+<li data-num="23.2" id="i-23-2">
+<p>In order for an individual recipient or organisation to be added to the register, the staff must first assess the eligibility of the potential recipient to take possession of cannabis by collecting information from the potential recipient.</p>
+</li>
+<li data-num="23.3" id="i-23-3">
+<p>Staff must review the provided evidence of eligibility and detail any additional information, pre-requisites, or conditions that must be satisfied prior to approval being granted. This may include:</p>
+<ul>
+<li>approval of a technical agreement and/or contracts</li>
+<li>obtaining evidence of the relevant licences/permits for the organisations intending to receive medicinal cannabis (e.g., Medical Cannabis Licence with Cultivation, Possession for Manufacture, Supply or Research Activity, Controlled Drug Licence etc.)</li>
+<li>the supporting documentation for their authorised/nominated recipients (e.g., name, contact details, photo ID if applicable, etc.).</li>
+</ul>
+</li>
+<li data-num="23.4" id="i-23-4">
+<p>Once the relevant information has been provided, the staff may add to the approved recipients list with the details of the new approved third party, including the expiry date of the licence.</p>
+</li>
+<li data-num="23.5" id="i-23-5">
+<p><strong>NOTE</strong>: Individuals and organisations may be removed from the register due to non-compliance with licence and/or security requirements, or after a security incident.</p>
+</li>
+<li data-num="23.6" id="i-23-6">
+<p>A Medicinal Cannabis Agency - Supply license is not currently being sought, for exporting of cannabis starting materials. As such the business will operate within the boundaries of the Cultivation regulations regarding national cultivation and sale to Medicinal Cannabis Agency license holders.</p>
+</li>
+</ol>
+<h3 id="24-purchasing-of-cannabis-materials">24. Purchasing of cannabis materials</h3>
+<ol class="num-ol">
+<li data-num="24.1" id="i-24-1">
+<p>All cannabis related materials are expected to be domestically sourced or distributed.</p>
+</li>
+<li data-num="24.2" id="i-24-2">
+<p>Until such a time there is a requirement for any international importing of seeds or other such restricted materials, all seeds / cuttings will be sourced from within New Zealand in accordance with existing legislation.</p>
+</li>
+<li data-num="24.3" id="i-24-3">
+<p>When required, an Import Permit must be obtained for every shipment of Cannabis seeds from an overseas supplier before the seeds are shipped to NZ.</p>
+</li>
+<li data-num="24.4" id="i-24-4">
+<p>All suppliers of seeds to be imported must be legally entitled to export the seeds with the required export documentation.</p>
+</li>
+<li data-num="24.5" id="i-24-5">
+<p>The seeds must be accompanied by a Phytosanitary Certificate that meets the requirements of IHS 155.02.05 Seeds for Sowing and a Certificate of Origin itemising all seeds in the shipment.</p>
+</li>
+<li data-num="24.6" id="i-24-6">
+<p>A signed Importer Declaration for Seeds Imports must be provided, declaring there are no pelleted seeds in the shipment before the seeds will be released.</p>
+</li>
+<li data-num="24.7" id="i-24-7">
+<p>The Importer Declaration on Page 3 of the Import Permit must be completed and returned to Medicines Control once the seeds have been received.</p>
+</li>
+</ol>
+<h3 id="25-sending-receiving-parcels">25. Sending / receiving parcels</h3>
+<ol class="num-ol">
+<li data-num="25.1" id="i-25-1">
+<p>Small parcels are light packages that can be reasonably held in a single hand, such as letters or small courier packages. These may be brought to or removed from the Facility through any standard access way.</p>
+</li>
+<li data-num="25.2" id="i-25-2">
+<p>Large items are packages that cannot be held in a single hand, such as large buckets, growing medium, or water reservoirs. These items should be received through a Loading Bay / access gate as applicable, where the vehicle has been reversed in such a way as to minimize or completely obscure any visibility from the outside.</p>
+</li>
+<li data-num="25.3" id="i-25-3">
+<p>Small parcels should not be opened in view of anybody not legally admitted to the Facility, including being opened while visible through any exterior facing windows.</p>
+</li>
+<li data-num="25.4" id="i-25-4">
+<p>Small parcels that are leaving the facility must not have any signage, logos, emblems or markings anywhere that relates to the company or business conducted at the Facility. Should there be any such logo or emblem, it should be covered before leaving the Secure Facility.</p>
+</li>
+<li data-num="25.5" id="i-25-5">
+<p>Details should be noted for any small parcels scheduled to be received with the details of the contents, the date it was ordered, and the scheduled delivery date.</p>
+</li>
+<li data-num="25.6" id="i-25-6">
+<p>Instructions should be provided to any courier company that packages are not to be left unattended.</p>
+</li>
+<li data-num="25.7" id="i-25-7">
+<p>Staff are to be scheduled to be on-site for the expected date of delivery.</p>
+</li>
+</ol>
+<h3 id="26-sending-wet-dry-biomass">26. Sending wet / dry biomass</h3>
+<ol class="num-ol">
+<li data-num="26.1" id="i-26-1">
+<p>Sending of wet / dry biomass is only to be done by staff at the implicit instruction of a named Responsible Person on the Medicinal Cannabis license, with the shipment scheduled in advance.</p>
+</li>
+<li data-num="26.2" id="i-26-2">
+<p>Prepare the order as required by the purchaser. This may include weighing out individual bags to appropriate sizes or packing into totes a specific number of pre-packed bags.</p>
+<ol class="num-ol">
+<li data-num="26.2.1" id="i-26-2-1">Tamper-evident packaging such as vacuum sealing under inert pressure shall be undertaken as a method to validate any tampering.</li>
+</ol>
+</li>
+<li data-num="26.3" id="i-26-3">
+<p>The cannabis materials are to be placed into a large tote as applicable for shipping with a lid.</p>
+</li>
+<li data-num="26.4" id="i-26-4">
+<p>Lock the shipping containers with a PIN-based padlock or similar security mechanism. The staff packaging the materials will disclose the PIN to the authorized personnel only. The authorized personnel will then disclose the PIN to only the intended recipient, and only once the wet / dry biomass has reached the destination.</p>
+</li>
+<li data-num="26.5" id="i-26-5">
+<p>Label the shipping container(s) with their manifest details such as weight, but not any identifying information or company logos. Leave the containers ready for dispatch in the secure storage area until the transporting vehicle has arrived for collection.</p>
+</li>
+<li data-num="26.6" id="i-26-6">
+<p>Create a shipping manifest of either a plant / clone count and initial weight for wet / dry biomass.</p>
+</li>
+<li data-num="26.7" id="i-26-7">
+<p>The shipping manifest must detail the name of the person the cannabis is sent to, the address of the recipient, the name of the controlled drug, i.e., cannabis and the quantity being sent and the intended method of delivery, e.g. the name of the courier company, is to accompany every shipment. Upon receipt, the manifest is to be signed by the receiver and a copy returned to confirm delivery.</p>
+<ol class="num-ol">
+<li data-num="26.7.1" id="i-26-7-1">An example is included in the Additional Items section of this document.</li>
+</ol>
+</li>
+<li data-num="26.8" id="i-26-8">
+<p>Details of the dispatched wet / dry biomass are to be saved, and the partially completed shipping manifest to be stored alongside it, prior to any cannabis materials leaving the facility.</p>
+</li>
+<li data-num="26.9" id="i-26-9">
+<p>Transporting vehicles and any other 3rd party personnel are to wait outside the premises.</p>
+<ol class="num-ol">
+<li data-num="26.9.1" id="i-26-9-1">During loading / unloading, the vehicle must not be left unattended.</li>
+</ol>
+</li>
+<li data-num="26.10" id="i-26-10">
+<p>Staff will then enter the secure storage area and verify the shipping container(s) are locked, and the shipping manifest is complete and accurate with transportation details matching. This manifest must accompany the shipping container(s).</p>
+</li>
+<li data-num="26.11" id="i-26-11">
+<p>Move the locked, labelled shipping containers from the secure storage area to the applicable area for exit, such as a loading bay / gate area or if applicable through the front door.</p>
+</li>
+<li data-num="26.12" id="i-26-12">
+<p>Load the locked transportation container(s) into the vehicle. This is to remain in a separate area from the driver, such as a locked rear of a van.</p>
+</li>
+<li data-num="26.13" id="i-26-13">
+<p>Staff are to accompany the biomass until it has arrived at the destination facility, to ensure live monitoring / tracking of the cannabis materials.</p>
+<ol class="num-ol">
+<li data-num="26.13.1" id="i-26-13-1">This may be a single authorized staff member from either the sending or the receiving company.</li>
+</ol>
+</li>
+<li data-num="26.14" id="i-26-14">
+<p>Contact the <em>Responsible Personnel</em> for the PIN number to access the transporting container so it can be unpacked once arrived at the final destination. The <em>Responsible Person</em> will send the PIN only to the Approved recipient, not to any transportation provider.</p>
+</li>
+<li data-num="26.15" id="i-26-15">
+<p>The transporting vehicle is not to have any signage, logos, emblems or markings anywhere that relates to the company or business conducted at the <em>Secure Facility</em>. Should there be any such logo or emblem, it should be covered before leaving the <em>Secure Facility</em>.</p>
+</li>
+<li data-num="26.16" id="i-26-16">
+<p>Notify the Responsible Person immediately of any unexpected delays during the journey. Delays are any event that requires an alteration to the planned route or vehicle, such as:</p>
+<ol class="num-ol">
+<li data-num="26.16.1" id="i-26-16-1">Mechanical breakdown</li>
+<li data-num="26.16.2" id="i-26-16-2">Flat tyre</li>
+<li data-num="26.16.3" id="i-26-16-3">Car crash</li>
+<li data-num="26.16.4" id="i-26-16-4">Signposted Detours</li>
+<li data-num="26.16.5" id="i-26-16-5">Attempted robbery</li>
+</ol>
+</li>
+<li data-num="26.17" id="i-26-17">
+<p><em>Responsible Personnel</em>, together with the <em>Transportation Provider</em> will decide on appropriate corrective action. The security of Cannabis must be maintained at all times.</p>
+</li>
+<li data-num="26.18" id="i-26-18">
+<p><em>Responsible Personnel</em> will notify the Police of the contents of the shipment in the event that the cannabis must be transferred to another vehicle for any reason, including mechanical breakdown or car crash.</p>
+</li>
+<li data-num="26.19" id="i-26-19">
+<p>Give the shipping manifest to the recipient at delivery and get a copy of the signed manifest for internal records.</p>
+</li>
+<li data-num="26.20" id="i-26-20">
+<p>Compare the weight of the biomass when received and branch count (if applicable) to the weight/count at the time of dispatch. Wet biomass weight is expected to change by a maximum of 5% during transport. Any change in weight greater than expected will be actioned as an incident.</p>
+</li>
+<li data-num="26.21" id="i-26-21">
+<p>No significant change is expected in the weight of <em>dry</em> biomass during transport.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="additional-items">Additional items</h2>
+<h3 id="chill-division-universal-shipping-manifest">Chill Division Universal Shipping Manifest</h3>
+<p><strong>Sending party:</strong></p>
+<ul>
+<li>Staff name preparing shipment</li>
+<li>Sending company name + licence #</li>
+<li>Email address to be notified upon arrival</li>
+<li>Site of Cultivation (if applicable)</li>
+<li>Date / time prepared for shipment</li>
+<li>Product (Dried flower, cuttings etc)</li>
+<li># of items sent</li>
+<li>Shipment weight, net / gross</li>
+<li>Recipient staff name</li>
+<li>Recipient company + licence #</li>
+<li>Destination address</li>
+<li>Staff signature</li>
+</ul>
+<p><strong>Transit chain of custody (if applicable):</strong></p>
+<ul>
+<li>Collected from facility by:</li>
+<li>Date / time shipment collected</li>
+<li># of items collected</li>
+<li>Collection signature / tracking number</li>
+</ul>
+<p><strong>Receiving party:</strong></p>
+<ul>
+<li>Received by (staff name)</li>
+<li>Date / time of receipt</li>
+<li># of items received</li>
+<li>Shipment weight (if applicable) net / gross</li>
+<li>Signature of receiving party</li>
+</ul>
+<p>Please scan / photo upon receipt of goods, and send a copy to the sender's email above.</p>
+<h3 id="annual-stock-take-reporting">Annual Stock Take reporting</h3>
+<ul>
+<li>Stock take to take place as of 1st January each year, reported by 31st Jan to the Agency.</li>
+<li>The following template may be used for each of Seeds, Plants, and Flower.
+<ul>
+<li>Note: Cultivators should not be in possession of oils / extracts, so this document does not take into account those types of products.</li>
+</ul>
+</li>
+<li>If there are discrepancies between this stock take and expected numbers, report them to the Agency at once and follow the appropriate Incident Management process.</li>
+<li>The &quot;In&quot; field is for any received / bred / cloned or purchased.</li>
+<li>The &quot;Out&quot; is used to determine any stock sent off, including flower for testing / sold genetics.</li>
+<li>The &quot;Die / Destroyed&quot; includes any clones that don't root, are killed off, or aren't harvested.</li>
+</ul>
+<p><strong>Seed stock:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Cultivar / Variety</th>
+<th style="text-align:left">Open: 1 Jan</th>
+<th style="text-align:left">In</th>
+<th style="text-align:left">Die / Destroyed</th>
+<th style="text-align:left">Out</th>
+<th style="text-align:left">Close: 31 Dec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Plant stock:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Cultivar / Variety</th>
+<th style="text-align:left">Open: 1 Jan</th>
+<th style="text-align:left">In</th>
+<th style="text-align:left">Die / Destroyed</th>
+<th style="text-align:left">Harvested</th>
+<th style="text-align:left">Out</th>
+<th style="text-align:left">Close: 31 Dec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dried flower stock:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Cultivar / Variety</th>
+<th style="text-align:left">Open: 1 Jan</th>
+<th style="text-align:left">In</th>
+<th style="text-align:left">Die / Destroyed</th>
+<th style="text-align:left">Out</th>
+<th style="text-align:left">Close: 31 Dec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong>
+<em>Company declares 2 White Widow plants during the licence application. They take 64 clones. Of those 64 clones, 54 are kept for flower / harvest, and two of them go on to become new mothers. The remaining 8 are destroyed, alongside the original two mothers. The stock take would look like this:</em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Cultivar / Variety</th>
+<th style="text-align:left">Open: 1 Jan</th>
+<th style="text-align:left">In</th>
+<th style="text-align:left">Die / Destroyed</th>
+<th style="text-align:left">Harvested</th>
+<th style="text-align:left">Out</th>
+<th style="text-align:left">Close: 31 Dec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">White Widow</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">66</td>
+<td style="text-align:left">10</td>
+<td style="text-align:left">54</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">2</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</section>
+<section class="chapter"><h2 id="changelog">Changelog</h2>
+<ul>
+<li>v3.0 unified release. The original combined document was split into three parts, plus an additional Automations Guide.
+<ul>
+<li>Chapter 1 (Building security requirements) is shared with the Site Design Guidelines and now appears in full at the start of this document.</li>
+<li>Removed the duplication this created. The physical and building security items in the General site security principles, General site standards, Access logging and Video surveillance sections that Chapter 1 already covers were trimmed, with those sections now pointing to Chapter 1 and keeping only their operational detail.</li>
+</ul>
+</li>
+</ul>
+</section>
+
+    <div class="pager">
+      <button id="prevCh" type="button">&larr; Previous</button>
+      <span class="pager-label" id="pagerLabel"></span>
+      <button id="nextCh" type="button">Next &rarr;</button>
+    </div>
+
+    <footer class="docfooter">
+      <span>Chill Division Security Policies and Procedures v3.0 &middot; Generated 2026-07-08 &middot; Chill Division</span>
+      <a href="https://github.com/Chill-Division/SOPs/blob/main/NOTICE">CC BY-SA 4.0</a>
+    </footer>
+  </main>
+</div>
+
+<div id="searchOverlay" class="search-overlay" hidden>
+  <div class="search-box" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-inputrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="searchInput" type="search" placeholder="Search this document" autocomplete="off" spellcheck="false">
+      <button id="searchClose" type="button" aria-label="Close search">Esc</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+</div>
+
+
+<script>
+(function () {
+  "use strict";
+
+  var body = document.body;
+  var htmlEl = document.documentElement;
+  var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+  var current = 0;
+
+  /* ---------- theme ---------- */
+  function setTheme(t) {
+    htmlEl.setAttribute("data-theme", t);
+    try { localStorage.setItem("sop-theme", t); } catch (e) {}
+  }
+  try {
+    var savedTheme = localStorage.getItem("sop-theme");
+    if (savedTheme === "dark" || savedTheme === "light") setTheme(savedTheme);
+  } catch (e) {}
+  document.getElementById("themeToggle").addEventListener("click", function () {
+    setTheme(htmlEl.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+
+  /* ---------- view mode ---------- */
+  var btnChapters = document.getElementById("viewChapters");
+  var btnSingle = document.getElementById("viewSingle");
+
+  function setView(mode, persist) {
+    if (mode === "single") {
+      body.classList.remove("mode-chapters");
+      btnSingle.classList.add("active");
+      btnChapters.classList.remove("active");
+    } else {
+      body.classList.add("mode-chapters");
+      btnChapters.classList.add("active");
+      btnSingle.classList.remove("active");
+      showChapter(current, false);
+    }
+    if (persist) { try { localStorage.setItem("sop-view", mode); } catch (e) {} }
+  }
+  btnChapters.addEventListener("click", function () { setView("chapters", true); });
+  btnSingle.addEventListener("click", function () { setView("single", true); });
+
+  /* ---------- chapters ---------- */
+  var prevBtn = document.getElementById("prevCh");
+  var nextBtn = document.getElementById("nextCh");
+  var pagerLabel = document.getElementById("pagerLabel");
+
+  function chapterTitle(i) {
+    var h = chapters[i] && chapters[i].querySelector("h1, h2, h3");
+    return h ? h.textContent : "Chapter " + (i + 1);
+  }
+
+  function showChapter(i, scrollTop) {
+    if (i < 0 || i >= chapters.length) return;
+    current = i;
+    chapters.forEach(function (ch, idx) {
+      ch.classList.toggle("current", idx === i);
+    });
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === chapters.length - 1;
+    prevBtn.textContent = i > 0 ? "← " + chapterTitle(i - 1) : "← Previous";
+    nextBtn.textContent = i < chapters.length - 1 ? chapterTitle(i + 1) + " →" : "Next →";
+    pagerLabel.textContent = (i + 1) + " / " + chapters.length;
+    tocLinks.forEach(function (a) {
+      a.classList.toggle("active", parseInt(a.getAttribute("data-ch"), 10) === i);
+    });
+    if (scrollTop !== false) window.scrollTo({ top: 0 });
+  }
+
+  prevBtn.addEventListener("click", function () { showChapter(current - 1); });
+  nextBtn.addEventListener("click", function () { showChapter(current + 1); });
+
+  /* ---------- TOC ---------- */
+  var sidebar = document.getElementById("sidebar");
+  var scrim = document.getElementById("scrim");
+  var mqNarrow = window.matchMedia("(max-width: 1023px)");
+  function closeDrawer() { body.classList.remove("nav-open"); }
+  document.getElementById("navToggle").addEventListener("click", function () {
+    if (mqNarrow.matches) {
+      body.classList.toggle("nav-open");        // mobile/tablet: off-canvas drawer
+    } else {
+      body.classList.toggle("sidebar-collapsed"); // desktop: collapse for wider reading
+    }
+  });
+  scrim.addEventListener("click", closeDrawer);
+  // Reset transient states when crossing the breakpoint so neither lingers.
+  mqNarrow.addEventListener("change", function () {
+    body.classList.remove("nav-open");
+    body.classList.remove("sidebar-collapsed");
+  });
+
+  tocLinks.forEach(function (a) {
+    a.addEventListener("click", function (ev) {
+      var chIdx = parseInt(a.getAttribute("data-ch"), 10);
+      if (body.classList.contains("mode-chapters") && !isNaN(chIdx)) {
+        showChapter(chIdx, false);
+      }
+      closeDrawer();
+      /* allow default anchor navigation to scroll to the id */
+    });
+  });
+
+  /* ---------- deep links (#anchor) ---------- */
+  function activateFromHash() {
+    var id = decodeURIComponent(location.hash.replace(/^#/, ""));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    var section = el.closest(".chapter");
+    if (section && body.classList.contains("mode-chapters")) {
+      showChapter(chapters.indexOf(section), false);
+    }
+    el.scrollIntoView({ behavior: "instant", block: "start" });
+    el.classList.add("search-hit");
+    setTimeout(function () { el.classList.remove("search-hit"); }, 1700);
+  }
+  window.addEventListener("hashchange", activateFromHash);
+
+  /* ---------- search ---------- */
+  var searchOverlay = document.getElementById("searchOverlay");
+  var searchInput = document.getElementById("searchInput");
+  var searchResults = document.getElementById("searchResults");
+  var GLOBAL_INDEX = window.SEARCH_INDEX || null; // present on the index page only
+  var localIndex = null;                          // built lazily from this page's DOM
+  var searchHits = [];
+  var searchSel = -1;
+  var KIND_WEIGHT = { h: 3, i: 2, b: 1 };
+
+  /* Direct text of a list item, excluding nested lists (they are indexed
+     as their own entries). */
+  function directText(el) {
+    var clone = el.cloneNode(true);
+    var lists = clone.querySelectorAll("ol, ul");
+    for (var i = 0; i < lists.length; i++) lists[i].parentNode.removeChild(lists[i]);
+    return clone.textContent;
+  }
+
+  function buildLocalIndex() {
+    var out = [];
+    chapters.forEach(function (ch, ci) {
+      var els = ch.querySelectorAll("h1[id], h2[id], h3[id], h4[id], li, p, tr");
+      Array.prototype.forEach.call(els, function (el) {
+        var tag = el.tagName.toLowerCase();
+        var e;
+        if (tag.charAt(0) === "h") {
+          e = { k: "h", t: el.textContent };
+        } else if (tag === "li") {
+          e = { k: el.hasAttribute("data-num") ? "i" : "b",
+                n: el.getAttribute("data-num") || "", t: directText(el) };
+        } else if (tag === "p") {
+          if (el.closest("li, table")) return; // covered by li / tr entries
+          e = { k: "b", t: el.textContent };
+        } else {
+          e = { k: "b", t: el.textContent }; // tr
+        }
+        e.t = e.t.replace(/\s+/g, " ").trim();
+        if (e.t.length < 3) return;
+        e.el = el;
+        e.ch = ci;
+        out.push(e);
+      });
+    });
+    return out;
+  }
+
+  function searchEntries() {
+    if (GLOBAL_INDEX) return GLOBAL_INDEX.entries;
+    if (!localIndex) localIndex = buildLocalIndex();
+    return localIndex;
+  }
+
+  function runSearch() {
+    var terms = searchInput.value.toLowerCase().split(/\s+/).filter(function (t) { return t.length > 0; });
+    searchHits = [];
+    searchSel = -1;
+    if (!terms.length) { renderResults(terms); return; }
+    var entries = searchEntries();
+    var scored = [];
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      var hay = ((e.n ? e.n + " " : "") + e.t).toLowerCase();
+      var ok = true, first = Infinity;
+      for (var j = 0; j < terms.length; j++) {
+        var p = hay.indexOf(terms[j]);
+        if (p === -1) { ok = false; break; }
+        if (p < first) first = p;
+      }
+      if (!ok) continue;
+      scored.push({ e: e, s: (KIND_WEIGHT[e.k] || 1) * 100000 - Math.min(first, 99999) });
+    }
+    scored.sort(function (a, b) { return b.s - a.s; });
+    searchHits = scored.slice(0, 40).map(function (x) { return x.e; });
+    renderResults(terms);
+  }
+
+  function makeSnippet(text, terms) {
+    var lower = text.toLowerCase();
+    var first = -1;
+    for (var i = 0; i < terms.length; i++) {
+      var p = lower.indexOf(terms[i]);
+      if (p !== -1 && (first === -1 || p < first)) first = p;
+    }
+    var start = 0;
+    if (first > 60 && text.length > 170) {
+      start = text.lastIndexOf(" ", first - 40);
+      start = start === -1 ? first - 40 : start + 1;
+    }
+    var out = text.slice(start, start + 170);
+    return (start > 0 ? "… " : "") + out + (start + 170 < text.length ? " …" : "");
+  }
+
+  function appendHighlighted(parent, text, terms) {
+    var lower = text.toLowerCase();
+    var pos = 0;
+    while (pos < text.length) {
+      var best = -1, len = 0;
+      for (var i = 0; i < terms.length; i++) {
+        var p = lower.indexOf(terms[i], pos);
+        if (p !== -1 && (best === -1 || p < best)) { best = p; len = terms[i].length; }
+      }
+      if (best === -1) {
+        parent.appendChild(document.createTextNode(text.slice(pos)));
+        return;
+      }
+      if (best > pos) parent.appendChild(document.createTextNode(text.slice(pos, best)));
+      var mk = document.createElement("mark");
+      mk.textContent = text.slice(best, best + len);
+      parent.appendChild(mk);
+      pos = best + len;
+    }
+  }
+
+  function renderResults(terms) {
+    searchResults.innerHTML = "";
+    if (!searchHits.length) {
+      if (searchInput.value.replace(/\s+/g, "")) {
+        var none = document.createElement("div");
+        none.className = "search-empty";
+        none.textContent = "No matches";
+        searchResults.appendChild(none);
+      }
+      return;
+    }
+    searchHits.forEach(function (e) {
+      var item = document.createElement("button");
+      item.type = "button";
+      item.className = "search-result";
+      var metaText = "";
+      if (GLOBAL_INDEX) {
+        metaText = GLOBAL_INDEX.docs[e.d].n + (e.n ? " " + e.n : "");
+      } else if (e.n) {
+        metaText = e.n;
+      }
+      if (metaText) {
+        var meta = document.createElement("span");
+        meta.className = "sr-meta";
+        meta.textContent = metaText;
+        item.appendChild(meta);
+      }
+      var txt = document.createElement("span");
+      txt.className = "sr-text" + (e.k === "h" ? " sr-heading" : "");
+      appendHighlighted(txt, makeSnippet(e.t, terms), terms);
+      item.appendChild(txt);
+      item.addEventListener("click", function () { activateResult(e); });
+      searchResults.appendChild(item);
+    });
+  }
+
+  function activateResult(e) {
+    if (GLOBAL_INDEX) {
+      var doc = GLOBAL_INDEX.docs[e.d];
+      window.location.href = doc.s + ".html" + (e.id ? "#" + e.id : "");
+      return;
+    }
+    closeSearch();
+    if (body.classList.contains("mode-chapters")) showChapter(e.ch, false);
+    e.el.scrollIntoView({ behavior: "instant", block: "start" });
+    e.el.classList.add("search-hit");
+    setTimeout(function () { e.el.classList.remove("search-hit"); }, 1700);
+  }
+
+  function openSearch() {
+    searchOverlay.hidden = false;
+    searchInput.focus();
+    searchInput.select();
+  }
+  function closeSearch() { searchOverlay.hidden = true; }
+
+  document.getElementById("searchToggle").addEventListener("click", openSearch);
+  document.getElementById("searchClose").addEventListener("click", closeSearch);
+  searchOverlay.addEventListener("click", function (ev) {
+    if (ev.target === searchOverlay) closeSearch();
+  });
+  searchInput.addEventListener("input", runSearch);
+
+  function updateSearchSel() {
+    var nodes = searchResults.querySelectorAll(".search-result");
+    Array.prototype.forEach.call(nodes, function (n, i) {
+      n.classList.toggle("selected", i === searchSel);
+      if (i === searchSel) n.scrollIntoView({ block: "nearest" });
+    });
+  }
+
+  searchInput.addEventListener("keydown", function (ev) {
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+      ev.preventDefault();
+      if (!searchHits.length) return;
+      searchSel = ev.key === "ArrowDown"
+        ? Math.min(searchSel + 1, searchHits.length - 1)
+        : Math.max(searchSel - 1, 0);
+      updateSearchSel();
+    } else if (ev.key === "Enter") {
+      ev.preventDefault();
+      var idx = searchSel >= 0 ? searchSel : 0;
+      if (searchHits[idx]) activateResult(searchHits[idx]);
+    }
+  });
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && !searchOverlay.hidden) { closeSearch(); return; }
+    var t = ev.target;
+    var tag = t && t.tagName ? t.tagName.toLowerCase() : "";
+    if (tag === "input" || tag === "textarea" || (t && t.isContentEditable)) return;
+    if (ev.key === "/" || ((ev.ctrlKey || ev.metaKey) && String(ev.key).toLowerCase() === "k")) {
+      ev.preventDefault();
+      openSearch();
+    }
+  });
+
+  /* ---------- init ---------- */
+  var savedView = "chapters";
+  try { savedView = localStorage.getItem("sop-view") || "chapters"; } catch (e) {}
+  setView(savedView, false);
+  showChapter(0, false);
+  activateFromHash();
+})();
+</script>
+</body>
+</html>

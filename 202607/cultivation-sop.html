@@ -1,0 +1,2342 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Chill Division SOP publisher">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Chill Division Cultivation SOP</title>
+<style>
+/* ==========================================================================
+   Chill Division SOP publishing stylesheet
+   Light mode (default) with blue accents; dark mode via [data-theme="dark"].
+   Inlined into the self-contained HTML at build time by publish/build.py.
+   ========================================================================== */
+
+:root {
+  --bg: #f6f8fb;
+  --panel: #ffffff;
+  --text: #1d2833;
+  --muted: #5c6c7d;
+  --accent: #1a6fe8;
+  --accent-strong: #0f5bd0;
+  --accent-soft: #e9f1fe;
+  --border: #dce4ee;
+  --code-bg: #eff3f9;
+  --shadow: 0 1px 3px rgba(16, 34, 60, 0.08), 0 8px 24px rgba(16, 34, 60, 0.06);
+  --topbar-h: 3.5rem;
+  --sidebar-w: 19rem;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --bg: #0e1520;
+  --panel: #151f2c;
+  --text: #dce5ef;
+  --muted: #8da0b5;
+  --accent: #5ea0ff;
+  --accent-strong: #82b5ff;
+  --accent-soft: #14273f;
+  --border: #253649;
+  --code-bg: #101a27;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Top bar
+   -------------------------------------------------------------------------- */
+
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  z-index: 40;
+}
+
+.topbar .doc-title {
+  font-weight: 650;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.version-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.icon-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.icon-btn svg { width: 1.1rem; height: 1.1rem; }
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  overflow: hidden;
+}
+.view-toggle button {
+  appearance: none;
+  border: 0;
+  background: var(--panel);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+.view-toggle button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* theme icons: show moon in light mode, sun in dark mode */
+#themeToggle .icon-sun { display: none; }
+#themeToggle .icon-moon { display: inline; }
+html[data-theme="dark"] #themeToggle .icon-sun { display: inline; }
+html[data-theme="dark"] #themeToggle .icon-moon { display: none; }
+
+/* --------------------------------------------------------------------------
+   Layout: sidebar + content
+   -------------------------------------------------------------------------- */
+
+.layout {
+  display: flex;
+  padding-top: var(--topbar-h);
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: fixed;
+  top: var(--topbar-h);
+  bottom: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 1rem 0.75rem 2rem;
+  z-index: 30;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  margin-left: var(--sidebar-w);
+  padding: 2rem clamp(1rem, 4vw, 3.5rem) 4rem;
+  max-width: calc(var(--sidebar-w) + 52rem);
+}
+
+/* Desktop: hamburger collapses the sidebar for a wider reading column. */
+@media (min-width: 1024px) {
+  .sidebar { transition: transform 0.2s ease; }
+  body.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+  body.sidebar-collapsed .content { margin-left: 0; max-width: 56rem; }
+}
+
+/* Home / all-documents link — hidden on the index itself. */
+.home-link { text-decoration: none; flex: 0 0 auto; }
+.is-index .home-link { display: none; }
+/* View toggle and chapter pager are meaningless on the index page. */
+.is-index .view-toggle,
+.is-index .pager { display: none; }
+
+.scrim {
+  display: none;
+  position: fixed;
+  inset: var(--topbar-h) 0 0 0;
+  background: rgba(10, 20, 35, 0.45);
+  z-index: 25;
+}
+
+/* Tablet / phone: off-canvas drawer */
+@media (max-width: 1023px) {
+  .sidebar {
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    box-shadow: var(--shadow);
+    width: min(var(--sidebar-w), 85vw);
+  }
+  body.nav-open .sidebar { transform: translateX(0); }
+  body.nav-open .scrim { display: block; }
+  .content { margin-left: 0; }
+  .view-toggle button { padding: 0.4rem 0.55rem; font-size: 0.74rem; }
+}
+
+/* --------------------------------------------------------------------------
+   Table of contents
+   -------------------------------------------------------------------------- */
+
+.toc-heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 0.25rem 0.75rem 0.5rem;
+}
+
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc ul ul {
+  margin-left: 0.65rem;
+  border-left: 1px solid var(--border);
+}
+
+.toc a {
+  display: block;
+  padding: 0.32rem 0.75rem;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.86rem;
+  border-radius: 0.45rem;
+  line-height: 1.35;
+}
+.toc ul ul a { font-size: 0.8rem; color: var(--muted); }
+
+.toc a:hover { background: var(--accent-soft); color: var(--accent-strong); }
+.toc a.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Document content
+   -------------------------------------------------------------------------- */
+
+.chapter { max-width: 48rem; }
+
+body.mode-chapters .chapter { display: none; }
+body.mode-chapters .chapter.current { display: block; }
+
+.content h1, .content h2, .content h3, .content h4 {
+  line-height: 1.3;
+  scroll-margin-top: calc(var(--topbar-h) + 1rem);
+}
+
+.content h1 { font-size: 1.75rem; margin: 1.5rem 0 1rem; }
+
+.content h2 {
+  font-size: 1.45rem;
+  margin: 2.25rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent);
+}
+
+.content h3 { font-size: 1.15rem; margin: 1.9rem 0 0.7rem; }
+.content h4 { font-size: 1rem; margin: 1.5rem 0 0.6rem; color: var(--muted); }
+
+.content a { color: var(--accent-strong); text-decoration: none; }
+.content a:hover { text-decoration: underline; }
+
+.content p { margin: 0.8rem 0; }
+
+.content ol, .content ul { padding-left: 1.6rem; margin: 0.8rem 0; }
+.content li { margin: 0.45rem 0; }
+.content li > ol, .content li > ul { margin: 0.45rem 0; }
+
+/* Hierarchical SOP numbering (12 → 12.1 → 12.4.1), stamped at build time
+   as data-num attributes on ordered-list items. */
+.content ol.num-ol { list-style: none; padding-left: 0; }
+.content ol.num-ol > li { position: relative; padding-left: 3em; }
+.content ol.num-ol ol.num-ol > li { padding-left: 4em; }
+.content ol.num-ol ol.num-ol ol.num-ol > li { padding-left: 5em; }
+.content ol.num-ol ol.num-ol ol.num-ol ol.num-ol > li { padding-left: 6em; }
+.content ol.num-ol > li::before {
+  content: attr(data-num);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-strong);
+}
+
+.content blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1.1rem;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 0.55rem 0.55rem 0;
+  color: var(--text);
+}
+.content blockquote p { margin: 0.4rem 0; }
+
+.content code {
+  font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, Menlo, monospace;
+  font-size: 0.86em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  padding: 0.08em 0.35em;
+}
+
+.content pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  padding: 0.9rem 1.1rem;
+  overflow-x: auto;
+}
+.content pre code { background: none; border: 0; padding: 0; }
+
+.content hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+  display: block;
+  overflow-x: auto;
+}
+.content table thead th {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  text-align: left;
+  font-weight: 650;
+}
+.content table th, .content table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  vertical-align: top;
+}
+.content table tbody tr:nth-child(even) { background: color-mix(in srgb, var(--accent-soft) 40%, transparent); }
+
+.content img { max-width: 100%; height: auto; }
+
+/* --------------------------------------------------------------------------
+   Chapter pager
+   -------------------------------------------------------------------------- */
+
+.pager {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  max-width: 48rem;
+}
+body.mode-chapters .pager { display: flex; }
+
+.pager button {
+  appearance: none;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-strong);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pager button:hover:not(:disabled) { border-color: var(--accent); }
+.pager button:disabled { opacity: 0.35; cursor: default; }
+
+.pager .pager-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.docfooter {
+  margin-top: 3rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  flex-wrap: wrap;
+}
+.docfooter a { color: var(--accent-strong); text-decoration: none; white-space: nowrap; }
+.docfooter a:hover { text-decoration: underline; }
+
+/* --------------------------------------------------------------------------
+   Search
+   -------------------------------------------------------------------------- */
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 35, 0.45);
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10vh 1rem 1rem;
+}
+.search-overlay[hidden] { display: none; }
+
+.search-box {
+  width: 100%;
+  max-width: 38rem;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.search-inputrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.search-inputrow svg { width: 1.1rem; height: 1.1rem; color: var(--muted); flex: 0 0 auto; }
+
+#searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+}
+
+#searchClose {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: 0.4rem;
+  padding: 0.15rem 0.45rem;
+  cursor: pointer;
+}
+#searchClose:hover { border-color: var(--accent); color: var(--accent); }
+
+.search-results { overflow-y: auto; overscroll-behavior: contain; }
+
+.search-result {
+  appearance: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+.search-result:last-child { border-bottom: 0; }
+.search-result:hover, .search-result.selected { background: var(--accent-soft); }
+
+.sr-meta {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.4rem;
+}
+
+.sr-text { flex: 1; min-width: 0; }
+.sr-text.sr-heading { font-weight: 650; }
+
+.search-result mark {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: inherit;
+  border-radius: 0.2rem;
+  padding: 0 0.08em;
+}
+
+.search-empty { padding: 1rem; color: var(--muted); font-size: 0.86rem; }
+
+/* Flash the target after jumping to a search result. */
+.search-hit { animation: search-hit 1.7s ease-out; }
+@keyframes search-hit {
+  0%, 45% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); border-radius: 0.3rem; }
+  100% { background: transparent; box-shadow: none; }
+}
+
+/* Keep jump targets clear of the fixed topbar. */
+.content li, .content p, .content tr { scroll-margin-top: calc(var(--topbar-h) + 1rem); }
+
+/* Phones: tighten the topbar so the extra search button still fits. */
+@media (max-width: 540px) {
+  .topbar { gap: 0.45rem; padding: 0 0.6rem; }
+  .icon-btn { width: 2rem; height: 2rem; }
+  .topbar .version-badge { display: none; }
+  .view-toggle button { padding: 0.35rem 0.45rem; font-size: 0.7rem; }
+}
+
+/* --------------------------------------------------------------------------
+   Index page cards
+   -------------------------------------------------------------------------- */
+
+.doc-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.doc-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.doc-card h3 { margin: 0; font-size: 1.05rem; }
+.doc-card .version-badge { align-self: flex-start; margin-left: 0; }
+.doc-card .doc-links { margin-top: auto; display: flex; gap: 0.6rem; padding-top: 0.75rem; }
+.doc-card .doc-links a {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--accent-strong);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+}
+.doc-card .doc-links a:hover { border-color: var(--accent); }
+.doc-card .doc-links a.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* --------------------------------------------------------------------------
+   Print — A4
+   -------------------------------------------------------------------------- */
+
+.print-only { display: none; }
+
+@page {
+  size: A4;
+  margin: 18mm 16mm;
+}
+
+@media print {
+  :root, html[data-theme="dark"] {
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --text: #17202b;
+    --muted: #4a5866;
+    --accent: #1a5fc4;
+    --accent-strong: #14509f;
+    --accent-soft: #edf3fc;
+    --border: #c9d4e0;
+    --code-bg: #f2f5f9;
+  }
+
+  body { background: #fff; font-size: 10.5pt; line-height: 1.5; }
+
+  .topbar, .sidebar, .scrim, .pager, #navToggle { display: none !important; }
+
+  .layout { padding-top: 0; }
+  .content { margin-left: 0; padding: 0; max-width: none; }
+  .chapter { display: block !important; max-width: none; }
+
+  .print-only { display: block; }
+
+  .print-title {
+    page-break-after: always;
+    padding-top: 30vh;
+    text-align: center;
+  }
+  .print-title .pt-brand {
+    font-size: 12pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-bottom: 1.5rem;
+  }
+  .print-title h1 { font-size: 22pt; margin: 0 0 1rem; }
+  .print-title .pt-version { color: var(--muted); font-size: 10pt; }
+
+  .chapter > h1, .chapter > h2:first-child { page-break-before: always; }
+  .chapter:first-of-type > h2:first-child { page-break-before: avoid; }
+
+  h1, h2, h3, h4 { page-break-after: avoid; }
+  table, blockquote, pre, img { page-break-inside: avoid; }
+  li { page-break-inside: avoid; }
+
+  .content table { display: table; font-size: 9pt; }
+
+  .content a { color: var(--text); text-decoration: none; }
+
+  .docfooter { border-top: 1px solid var(--border); padding-top: 0.5rem; }
+}
+
+</style>
+</head>
+<body class="mode-chapters ">
+
+<header class="topbar">
+  <button id="navToggle" class="icon-btn" aria-label="Toggle navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="home-link icon-btn" href="index.html" aria-label="All documents" title="All documents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h5v-5h4v5h5v-9"/></svg>
+  </a>
+  <div class="doc-title">Chill Division Cultivation SOP<span class="version-badge">v3.0</span></div>
+  <div class="controls">
+    <div class="view-toggle" role="group" aria-label="View mode">
+      <button id="viewChapters" class="active" type="button">Chapters</button>
+      <button id="viewSingle" type="button">Single page</button>
+    </div>
+    <button id="searchToggle" class="icon-btn" aria-label="Search" title="Search ( / )" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button id="themeToggle" class="icon-btn" aria-label="Toggle dark mode" type="button">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="toc-heading">Contents</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" data-ch="0">Introduction</a>
+</li>
+<li><a href="#1-growth-process-overview" data-ch="1">1. Growth process overview</a>
+</li>
+<li><a href="#2-plant-introduction-into-the-facility" data-ch="2">2. Plant introduction into the facility</a>
+</li>
+<li><a href="#3-cloning-process" data-ch="3">3. Cloning process</a>
+</li>
+<li><a href="#4-vegetative-growth" data-ch="4">4. Vegetative growth</a>
+</li>
+<li><a href="#5-flowering" data-ch="5">5. Flowering</a>
+<ul>
+<li><a href="#crop-steering" data-ch="5">Crop steering</a></li>
+</ul></li>
+<li><a href="#6-harvesting-and-drying" data-ch="6">6. Harvesting and drying</a>
+</li>
+<li><a href="#7-trimming" data-ch="7">7. Trimming</a>
+</li>
+<li><a href="#8-packaging" data-ch="8">8. Packaging</a>
+</li>
+<li><a href="#9-testing" data-ch="9">9. Testing</a>
+<ul>
+<li><a href="#hop-latent-viroid-testing" data-ch="9">Hop Latent Viroid testing</a></li>
+</ul></li>
+<li><a href="#10-cleaning-room-reset" data-ch="10">10. Cleaning / room reset</a>
+</li>
+<li><a href="#11-pest-management-ipm" data-ch="11">11. Pest management / IPM</a>
+<ul>
+<li><a href="#foliar-spray" data-ch="11">Foliar spray</a></li>
+<li><a href="#beneficial-bugs" data-ch="11">Beneficial bugs</a></li>
+<li><a href="#supplementary-pest-control-measures" data-ch="11">Supplementary pest control measures</a></li>
+</ul></li>
+<li><a href="#12-nutrient-mixing-storage-and-handling" data-ch="12">12. Nutrient mixing, storage, and handling</a>
+<ul>
+<li><a href="#nutrient-mixing" data-ch="12">Nutrient mixing</a></li>
+<li><a href="#nutrient-storage-and-handling" data-ch="12">Nutrient storage and handling</a></li>
+<li><a href="#specific-nutrient-storage-and-handling" data-ch="12">Specific nutrient storage and handling</a></li>
+<li><a href="#nutrient-spill-management" data-ch="12">Nutrient spill management</a></li>
+</ul></li>
+<li><a href="#changelog" data-ch="13">Changelog</a>
+</li>
+</ul>
+    </div>
+  </nav>
+  <div id="scrim" class="scrim"></div>
+
+  <main id="content" class="content">
+    <div class="print-only print-title">
+      <div class="pt-brand">Chill Division</div>
+      <h1>Chill Division Cultivation SOP</h1>
+      <div class="pt-version">v3.0 &middot; Generated 2026-07-08</div>
+    </div>
+
+<section class="chapter"><p><strong>Cultivation Facility</strong>
+Cultivation Standard Operating Procedures for soilless media facility</p>
+<p>v3.0
+&quot;The complete set&quot;</p>
+<hr />
+<h2 id="introduction">Introduction</h2>
+<blockquote>
+<p><strong>AI use is not acceptable in these SOPs.</strong> It hasn't been used to write them,
+nor will commits made with it be accepted. The exception is the underlying
+framework for displaying / formatting the SOPs online, but not the content itself.</p>
+</blockquote>
+<p>These Cultivation SOPs work together with the <strong>Chill Division Site Design
+Guidelines</strong> and the <strong>Chill Division Security Policies &amp; Procedures</strong>. A licence
+application should include all three documents.</p>
+<p>Several supporting processes referenced throughout this document (biomass
+disposal, cannabis record keeping, the Record Book and Chain of Custody, and the
+lists of Approved Suppliers and Approved Recipients) are defined in the <strong>Chill
+Division Security Policies &amp; Procedures</strong>. This document covers the cultivation
+work itself. Automation setup detail lives in the <strong>Chill Division Automations
+Guide</strong>.</p>
+<p>All terminology follows <a href="https://datatracker.ietf.org/doc/html/rfc2119">RFC 2119</a>
+(MUST / SHOULD / MAY).</p>
+<p>Copyright © Chill Division. Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>, with attribution and trademark terms set out in the <a href="https://github.com/Chill-Division/SOPs/blob/main/NOTICE">NOTICE</a>.</p>
+<hr />
+</section>
+<section class="chapter"><h2 id="1-growth-process-overview">1. Growth process overview</h2>
+<ol class="num-ol">
+<li data-num="1.1" id="i-1-1">
+<p>Cultivation begins with a mothering plant(s) that generates sufficient clones every 2, 4 or 8 weeks, depending on the circumstances of the facility layout and requirements.</p>
+</li>
+<li data-num="1.2" id="i-1-2">
+<p>Germination through seed is not the recommended &quot;standard&quot; process, cloning should always be utilized as the primary means for cultivation as seeds are <strong>never</strong> uniform enough and even from the same batch of seeds from the same plant there can be astronomical variation in THC percentages.</p>
+<ol class="num-ol">
+<li data-num="1.2.1" id="i-1-2-1">Where seeds are to be germinated, they should be placed in a &quot;Germination Tower&quot; and watered 3x a day in accordance with the manufacturer instructions.</li>
+<li data-num="1.2.2" id="i-1-2-2">The germinated seeds are to then be transplanted into rockwool / coco coir / jiffy peat pellets as with cloning under §3.</li>
+<li data-num="1.2.3" id="i-1-2-3">Failure of any seeds to germinate must be recorded appropriately as with any plants / clones.</li>
+</ol>
+</li>
+<li data-num="1.3" id="i-1-3">
+<p>Clones are taken from the mother plant, placed into a clone-dome where they are expected to root within 10-14 days, though allowances may need to be made for this to take up to 3 weeks depending on the cultivar and age of the genetics.</p>
+</li>
+<li data-num="1.4" id="i-1-4">
+<p>When the clones have taken root and hardened off, they will be removed from the clone dome, transplanted into a larger capacity container of coco or rockwool cube, and be moved into a new area for vegetative growth. The plants may need further movement in the future from this vegetative growth area into a flowering-specific area depending on the facility layout.</p>
+</li>
+<li data-num="1.5" id="i-1-5">
+<p>If required, once the plants have grown to a sufficient size to complete a canopy-space of flowers, the photoperiod will be changed and the flower cycle commences. The plants may be repotted again or stacked on top of a larger rockwool cube / slab, if required, at this time.</p>
+</li>
+<li data-num="1.6" id="i-1-6">
+<p>The plants will be harvested approx 8-13 weeks after their flower photoperiod has changed, in accordance with the cultivars unique and specific requirements.</p>
+</li>
+<li data-num="1.7" id="i-1-7">
+<p>If there is a dedicated drying area, they are to be hung upside-down in this dedicated drying area, or alternatively hung in the area in which they were growing.</p>
+</li>
+<li data-num="1.8" id="i-1-8">
+<p>Once dried, a curing process should be undertaken as-per any offtake requirements, such as through the use of Grove Bags.</p>
+</li>
+<li data-num="1.9" id="i-1-9">
+<p>The dried flower can then be stored ready for collection by the offtake buyer. The process starts over.</p>
+</li>
+<li data-num="1.10" id="i-1-10">
+<p>There may be multiple growth cycles occurring concurrently within the facility, depending on the size and nature of the floorplan.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="2-plant-introduction-into-the-facility">2. Plant introduction into the facility</h2>
+<p>The Standard Operating Procedures only ever expect known-good clones to be brought into the facility, either purchased from another Medicinal Cannabis licence holder, or declared from an underground / illicit source.</p>
+<ol class="num-ol">
+<li data-num="2.1" id="i-2-1">
+<p>New Mother plants or clones to be used as mother plants are to be purchased only from Approved Suppliers, keeping in compliance with the Misuse of Drugs (Medicinal Cannabis) Regulations 2019.</p>
+</li>
+<li data-num="2.2" id="i-2-2">
+<p>Approved suppliers of cannabis plants must hold a &quot;Medicinal Cannabis Licence: Nursery or Cultivation&quot; activity in New Zealand. Evidence of the licence held by the supplier is kept in the Record Book.</p>
+</li>
+<li data-num="2.3" id="i-2-3">
+<p>Only cultivars listed on the Medicinal Cannabis licence are approved for purchase. If a new cultivar is to be grown, Responsible Personnel will submit an amendment to the medicinal cannabis licence. The amendment must be approved before the plants are procured.</p>
+</li>
+<li data-num="2.4" id="i-2-4">
+<p>Alternatively, plants may be procured from an illicit source if declared in advance. Up to 20 plants from an underground / illicit seller may be declared per-consignment notice filed with the Ministry of Health. The plants must be of a cultivar already &quot;known&quot; in Aotearoa New Zealand.</p>
+</li>
+<li data-num="2.5" id="i-2-5">
+<p>An initial application Form D: Declaration of illicit seed and plants should be completed, witnessed by a JP or appropriate notary, and submitted alongside the growers application for a Cultivation activity.</p>
+</li>
+<li data-num="2.6" id="i-2-6">
+<p>If more than 20 plants are to be procured from an illicit source at one time, multiple declarations may be made if needed to declare the total number of plants obtained.</p>
+</li>
+<li data-num="2.7" id="i-2-7">
+<p>On receipt, record the number of plants received in the Record Book.</p>
+</li>
+<li data-num="2.8" id="i-2-8">
+<p>Pre-assemble a grow-tent in an area designated for cultivation, so it is ready to use for quarantine purposes prior to the expected arrival of new plants. This is to ensure that no outside contaminants such as insects are cross-contaminated onto the other plants in the facility.</p>
+<ol class="num-ol">
+<li data-num="2.8.1" id="i-2-8-1">This tent can be disassembled at the completion of the quarantine period and is not expected to be a permanent fixture.</li>
+</ol>
+</li>
+<li data-num="2.9" id="i-2-9">
+<p>This quarantine tent should be confirmed to be operating at a <strong>negative</strong> pressure to ensure that internal air is not pushed outwards into the remainder of the Secure Facility. The air should be internally recirculating as much as possible, such that no contaminants will escape.</p>
+<ol class="num-ol">
+<li data-num="2.9.1" id="i-2-9-1">The exhausted air should have a HEPA filter for environmental contaminant controls, rather than a carbon filter, with the external rooms carbon filter being used for odour control.</li>
+</ol>
+</li>
+<li data-num="2.10" id="i-2-10">
+<p>Receiving personnel are to confirm the number of plants received matches the number of plants expected. Any discrepancies are addressed immediately through review of video footage and contact with the supplier and transporting personnel.</p>
+</li>
+<li data-num="2.11" id="i-2-11">
+<p>Where available, plants should be received through a Loading Bay area and taken to the quarantine tent immediately. Where a loading bay is not available, induction of the plants should be as discreet as possible in accordance with the Sending / receiving parcels procedure, and immediately taken to quarantine.</p>
+</li>
+<li data-num="2.12" id="i-2-12">
+<p>All newly received plants are to be labelled with their cultivar name, and a plant number starting from 1. If applicable, they may also be labelled with the date received.</p>
+</li>
+<li data-num="2.13" id="i-2-13">
+<p>All plants are to be dunked in a foliar washing solution, such as Athena IPW or a Sulphur bath. Alternatively an approved pesticide product, or product consisting of approved active ingredients, may be used in accordance with Misuse of Drugs (Medicinal Cannabis) Regulations 2019 for NZMQS. A list of acceptable pesticides is published on the Ministry of Health <a href="https://www.health.govt.nz/our-work/regulation-health-and-disability-system/medicinal-cannabis-agency/medicinal-cannabis-agency-information-industry/medicinal-cannabis-agency-pesticide-use-during-cultivation">website</a>.</p>
+</li>
+<li data-num="2.14" id="i-2-14">
+<p>Plants will remain in the quarantine tent for a period of 2+ weeks under observation to monitor for any infection, insect infestation, or other undesired occurrence.</p>
+</li>
+<li data-num="2.15" id="i-2-15">
+<p>Any surplus / non-viable plants to be disposed of are to be treated as Discarded Biomass and disposed of safely and securely in accordance with the Disposal of Biomass process (see the Chill Division Security Policies &amp; Procedures).</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="3-cloning-process">3. Cloning process</h2>
+<p>The Mother Area contains one or more plants in a permanent vegetative growth state for the sole purpose of taking cuttings to create new plants.</p>
+<p>Cuttings are taken with an expected 80% retention rate, with 20% expected to either 'die off', not take root, or be disposed of as part of genetic selection in accordance with the Disposal of biomass process. Therefore, if an expected 40 plants are desired for a season, a minimum of 50 cuttings would be taken. However, more can be taken for genetic selection purposes and consistency of size etc.</p>
+<ol class="num-ol">
+<li data-num="3.1" id="i-3-1">
+<p>Prepare the clone rockwool cubes / root-plugs / jiffy pellets in accordance with either the growing medium manufacturer instructions, or the nutrient vendor instructions. Alternatively, if available, the nutrient manufacturers feed-chart preparation instructions may be followed.</p>
+</li>
+<li data-num="3.2" id="i-3-2">
+<p>Sterilize the clone dome base, tray and lid with a sanitising agent such as peracetic acid or hypochlorous acid.</p>
+</li>
+<li data-num="3.3" id="i-3-3">
+<p>The clone dome should then be fully dried with a single-use disposable / paper towel, ensuring no extra nutrients / water remains in the bottom tray. This includes underneath the grid-insert tray if one is being used. The dome lid should also be completely dried.</p>
+<ol class="num-ol">
+<li data-num="3.3.1" id="i-3-3-1">A regular towel should not be used, as it may contain microbial contaminants.</li>
+<li data-num="3.3.2" id="i-3-3-2">The lid / dome etc may be shaken to remove excess water first prior to drying with a paper towel.</li>
+</ol>
+</li>
+<li data-num="3.4" id="i-3-4">
+<p>Prepare a small 30-50mL glass, jar or plastic container with rooting hormone / compound such as Clonex.</p>
+</li>
+<li data-num="3.5" id="i-3-5">
+<p>The following variables are to be used as guideline targets during the cloning process:</p>
+<ol class="num-ol">
+<li data-num="3.5.1" id="i-3-5-1">Temperature: 23-26C (Dome via temperature probe)</li>
+<li data-num="3.5.2" id="i-3-5-2">Dome Humidity: 80 - 95%</li>
+<li data-num="3.5.3" id="i-3-5-3">Dome VPD: 0.4 - 0.6 kPa</li>
+<li data-num="3.5.4" id="i-3-5-4">PAR: 100 - 150 μmol/m2/s</li>
+<li data-num="3.5.5" id="i-3-5-5">Input EC: 2.0 - 2.5 (&quot;Bloom&quot; nutrients)</li>
+<li data-num="3.5.6" id="i-3-5-6">Input pH: 5.0 - 5.5</li>
+<li data-num="3.5.7" id="i-3-5-7">CO2: 1200 - 1500ppm</li>
+<li data-num="3.5.8" id="i-3-5-8">Alternatively the nutrient / growing medium manufacturers recommendations may be used.</li>
+</ol>
+</li>
+<li data-num="3.6" id="i-3-6">
+<p>An additional sensor should be placed inside of the cloning area (such as tent / room), but not the dome itself, to ensure the conditions are accurate.</p>
+<ol class="num-ol">
+<li data-num="3.6.1" id="i-3-6-1">Portable sensors may be used in the dome itself for remote observation and monitoring of the dome, however care should be taken to ensure that the device can function in humidity levels as high as 99%RH.</li>
+<li data-num="3.6.2" id="i-3-6-2">If a small sensor is to be placed inside of the clone dome, it should be appropriately cleaned / sanitized first.</li>
+<li data-num="3.6.3" id="i-3-6-3">The room itself should never exceed 26C as this will impact the domes ability to be controlled by the heat mat.</li>
+</ol>
+</li>
+<li data-num="3.7" id="i-3-7">
+<p>The clone dome that the cuttings are to be placed into should be labelled with the cultivar name and the date that the cuttings were taken. This label may take the form of tape / sticker attached to the dome, or permanent marker directly labelling the outside of the clone dome.</p>
+</li>
+<li data-num="3.8" id="i-3-8">
+<p>Using a sterilized scalpel or cutting scissors, take the required number of clones from the mother-plant(s).</p>
+</li>
+<li data-num="3.9" id="i-3-9">
+<p>As the cuttings are taken, they are to be placed into an appropriately sterile cup / jug containing RO water or similar cloning solution if recommended by the nutrient line manufacturer.</p>
+<ol class="num-ol">
+<li data-num="3.9.1" id="i-3-9-1">If a 500mL cup is used, 100-125mL of water / solution should be in the bottom of it to keep the clones fresh during the cloning process.</li>
+<li data-num="3.9.2" id="i-3-9-2">If a 2L jug is being used, approx 1000mL of solution should be in the bottom of it to keep the clones fresh during the cloning process.</li>
+<li data-num="3.9.3" id="i-3-9-3">The bottom 1.5 - 4cm should always be submerged in solution until the cutting is plugged to prevent drying up and wilting.</li>
+</ol>
+</li>
+<li data-num="3.10" id="i-3-10">
+<p>Cuttings are to be taken from a mother plant no more than 185 days old (half a year). Cuttings should only be taken from a healthy / vibrant mother plant.</p>
+</li>
+<li data-num="3.11" id="i-3-11">
+<p>Should a mother plant be suffering from stunted growth, or suffering from unhealthy signs of nutrient deficiency / environmental stress / pests or pathogens, another mother plant should be selected or the cloning process delayed.</p>
+</li>
+<li data-num="3.12" id="i-3-12">
+<p>Cuttings should be taken from the middle and upper part of the plant.</p>
+</li>
+<li data-num="3.13" id="i-3-13">
+<p>Cuttings should be approx 15cm long, avoiding the bent branches on the lower part of the plant, and should be at least 3mm thick at the stem.</p>
+</li>
+<li data-num="3.14" id="i-3-14">
+<p>Cuttings should be evenly taken from around the entire mother plant to create a balanced and uniform shape both of the mother plant, but also as well with the cuttings being taken.</p>
+</li>
+</ol>
+<p>When a sufficient number of cuttings have been taken, the following preparations should be undertaken for each clone, one at a time, prior to placing it into the cloning medium:</p>
+<ol start="15" class="num-ol">
+<li data-num="3.15" id="i-3-15">
+<p>Using a scalpel or scissors, manicure the cuttings by trimming the lower nodes and fan leaves flush with the stem.</p>
+</li>
+<li data-num="3.16" id="i-3-16">
+<p>Hold the top of a cutting by making a loose fist around it, exposing the blade tips. Cut these with scissors to prevent further growth in those leaves and promote rooting.</p>
+</li>
+<li data-num="3.17" id="i-3-17">
+<p>Using a scalpel to cut through the bottom of the stem, apply a cut approx 20-45 degrees from the stem, such that as much plant tissue is exposed over a ~1cm area. The cutting should be approx 12 - 13cm tall at this stage.</p>
+</li>
+<li data-num="3.18" id="i-3-18">
+<p>Dip the cut end of the stem into the rooting hormone solution. Coat the bottom 2.5cm of the stem by slowly rotating it in the compound for 5 seconds.</p>
+</li>
+<li data-num="3.19" id="i-3-19">
+<p>Delicately stick the cut end of the stem, coated with the rooting compound, into the growing medium, approx 2 - 2.5cm deep. Care should be taken not to force the stem into the growing medium and / or break the stem.</p>
+</li>
+<li data-num="3.20" id="i-3-20">
+<p>Cuttings should then be placed into the clone dome. Where a rockwool tray is being used, only every-other cell should be used to avoid overcrowding.</p>
+</li>
+<li data-num="3.21" id="i-3-21">
+<p>Cuttings should be placed into the dome in a pattern similar to how the 5 dots would be shown on a dice or on dominos.</p>
+</li>
+<li data-num="3.22" id="i-3-22">
+<p>Where a tray holds 72 cells, only 36 clones should be placed into that tray.</p>
+</li>
+<li data-num="3.23" id="i-3-23">
+<p>Record the number of cuttings taken in the Record Book.</p>
+</li>
+<li data-num="3.24" id="i-3-24">
+<p>Place the clone dome into the cloning tent, ensuring that any vents on the dome are closed, and that the lid for the dome tightly covers all edges with no leaves being trapped between the lid and the tray.</p>
+</li>
+<li data-num="3.25" id="i-3-25">
+<p>If the clone trays were pre-soaked sufficiently, the clones in rockwool should require feeding again on days 5, 7, 9 and 11 (if applicable), and can be done with the same nutrient solution feed that they were originally soaked in. Application should be of 10-20mL nutrient feed through a syringe on top of each of the individual growing mediums. This may vary for rapid-rooters or jiffy plugs and may not be required, in accordance with manufacturers directions.</p>
+<ol class="num-ol">
+<li data-num="3.25.1" id="i-3-25-1">Alternatively, take the entire clone tray and submerge the substrate (but not the clones) in an appropriately diluted and pH-balanced mix of nutrients, to re-saturate the clones. Discard the nutrient solution afterwards.</li>
+</ol>
+</li>
+<li data-num="3.26" id="i-3-26">
+<p>Lighting should remain on 24/7 during the cloning process.</p>
+</li>
+<li data-num="3.27" id="i-3-27">
+<p>The clone dome should be left untouched for the first day, but cleaned and &quot;burped&quot; daily afterwards until the 10th day.</p>
+<ol class="num-ol">
+<li data-num="3.27.1" id="i-3-27-1">This involves removing the clone dome from the clone tent for a period of 5-10 minutes to ensure sufficient CO2 is in the ambient space around the clones.</li>
+<li data-num="3.27.2" id="i-3-27-2">The lid should then be dried from any excess moisture that has accumulated on it, through the use of a paper towel. Several paper towels may be required to ensure the moisture is completely removed from the dome lid.</li>
+<li data-num="3.27.3" id="i-3-27-3">Although not required, a further spray with a sanitising agent of the dome lid may be undertaken, using peracetic acid or hypochlorous acid. The dome lid must then be completely wiped clean again afterwards with a paper towel.</li>
+</ol>
+</li>
+<li data-num="3.28" id="i-3-28">
+<p>Clones should be checked daily by lifting the grid-insert tray up to inspect for roots and ensure there is no additional nutrient solution trapped underneath. Alternatively if rapid-rooters or jiffy peat pellets are being utilised these should be inspected daily to ensure roots are protruding.</p>
+</li>
+<li data-num="3.29" id="i-3-29">
+<p>When a sufficient number of the clones have taken root, a process of hardening off should then take place by leaving the vents open on the lid of the dome. This should take place over approx 2-4 days.</p>
+<ol class="num-ol">
+<li data-num="3.29.1" id="i-3-29-1">Start with the vents on the top of the dome lid. There should be two, each should be half-open.</li>
+<li data-num="3.29.2" id="i-3-29-2">The following day the vents on the top of the dome should remain fully opened.</li>
+<li data-num="3.29.3" id="i-3-29-3">The 3rd day the side vents should then also be half opened. There should be a vent on each end of the dome-lid.</li>
+<li data-num="3.29.4" id="i-3-29-4">On the 4th and final day, all the vents should be fully opened.</li>
+</ol>
+</li>
+<li data-num="3.30" id="i-3-30">
+<p>The clones are now rooted and hardened and ready to be moved into a grow area for vegetative growth.</p>
+</li>
+<li data-num="3.31" id="i-3-31">
+<p>Select the required number clones to be kept, choosing the healthiest and most vigorous ones. Note the number to be destroyed according to the disposal process.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="4-vegetative-growth">4. Vegetative growth</h2>
+<p>The rooted clones are now ready for vegetative growth. This process is expected to take approx 1-2 weeks depending on the desired density of plants in the growspace, the growing medium, and how steady environmental controls are. However, this may take up to 3-4 weeks also depending on the strain, vigour of the clones etc.</p>
+<ol class="num-ol">
+<li data-num="4.1" id="i-4-1">
+<p>Prepare the growing medium for receiving the new clones by pre-soaking it with an appropriate strength feed of vegetative growth nutrients, in accordance with the manufacturers feed chart.</p>
+</li>
+<li data-num="4.2" id="i-4-2">
+<p>Where coco coir is being used, it should come initially dehydrated such that there is no possibility of fungus gnats or other such contaminants being brought into the facility.</p>
+</li>
+<li data-num="4.3" id="i-4-3">
+<p>The smallest &quot;safe&quot; size of growing medium should be selected, such as a 6&quot; (Hugo) rockwool cube, or a 1-2 gallon fabric pot for coco coir.</p>
+<ol class="num-ol">
+<li data-num="4.3.1" id="i-4-3-1">Supplementary perlite should not be added to the coco, as this can cause erratic readings with sensors, and is not necessary.</li>
+<li data-num="4.3.2" id="i-4-3-2">Where rockwool cubes are used, ensure that the outer plastic wrap is NOT removed.</li>
+</ol>
+</li>
+<li data-num="4.4" id="i-4-4">
+<p>Lay out each of the pots / rockwool cubes on the drain trays in the position where they will be growing.</p>
+<ol class="num-ol">
+<li data-num="4.4.1" id="i-4-4-1">If the plants will be moved in future from a vegetative growth room to a flowering room, the layout can be further condensed.</li>
+<li data-num="4.4.2" id="i-4-4-2">If the plants will be growing from vege to harvest in the same area, care and consideration should be given to the layout, allowing each plant approx between 400x400mm of canopy space, up to 600x600mm.</li>
+</ol>
+</li>
+<li data-num="4.5" id="i-4-5">
+<p>One by one, the rooted clones should then be re-placed into their new growing medium. Care must be taken with any roots coming out of the bottom of the clones to ensure they are not pinched during this process.</p>
+<ol class="num-ol">
+<li data-num="4.5.1" id="i-4-5-1">Where rockwool is used the clones should be inserted into the hole in the top of the cube, and then lightly pressed into place.</li>
+<li data-num="4.5.2" id="i-4-5-2">Where coco is used, a small hole that is slightly larger than the clone growing medium should be dug out into the coco. The clone should be placed into the hole and then the additional coco lightly moved back over the top of it. The clone should then be lightly pressed down into place to ensure the top part of the coco is sufficiently &quot;packed&quot; around the newly transplanted clone.</li>
+</ol>
+</li>
+<li data-num="4.6" id="i-4-6">
+<p>The watering &quot;cap&quot; for rockwool, or &quot;ring&quot; for coco, should then be placed on top of the clone. This should be as central as possible, and where applicable the cap should cover as much of the cube as it can. Where two watering rings are used per-plant, with one smaller inside of another, the innermost ring should be as close to the base of the plant as possible.</p>
+</li>
+<li data-num="4.7" id="i-4-7">
+<p>Ensure that any pressure compensating drippers are appropriately attached to the main feed line, or tubing is attached to a pressure compensator and then onto the watering rings.</p>
+</li>
+<li data-num="4.8" id="i-4-8">
+<p>Plants should ideally have a Netafim Netbow which has 4 dripper points, or alternatively if barbs are used then 2x barbs/stakes per-plant. Where Netbows are used, the target should be 4L/hr from a single PCJ, in accordance with the manufacturer recommendations. Barbs should be 1.2L/hr or 2L/hr each. This should minimize any channelling that occurs, and allow ample time for runoff to purge any higher EC nutrients from the medium.</p>
+</li>
+<li data-num="4.9" id="i-4-9">
+<p>A manual watering dose should be done at completion of the transplanting to help bed-in the clone. This should consist of dosing through an automated watering system. Each pot / cube should then be inspected to ensure that nutrient water has adequately been dosed as a final precaution, with remedial actions taken if not.</p>
+</li>
+<li data-num="4.10" id="i-4-10">
+<p>The following environmental targets should be used during the vegetative growth phase:</p>
+<ol class="num-ol">
+<li data-num="4.10.1" id="i-4-10-1">Day Temperature: 24 - 29C (room)</li>
+<li data-num="4.10.2" id="i-4-10-2">Night Temperature: 22 - 28C</li>
+<li data-num="4.10.3" id="i-4-10-3">Room Relative Humidity: 70-75%</li>
+<li data-num="4.10.4" id="i-4-10-4">Initial Room VPD: 0.7 - 0.8 kPa</li>
+<li data-num="4.10.5" id="i-4-10-5">Final Room VPD: 0.9 - 1.0 kPa</li>
+<li data-num="4.10.6" id="i-4-10-6">Initial PAR: 300 - 400 μmol/m2/s</li>
+<li data-num="4.10.7" id="i-4-10-7">Final PAR: 800 - 1000 μmol/m2/s</li>
+<li data-num="4.10.8" id="i-4-10-8">CO2: 1200 - 1500ppm</li>
+<li data-num="4.10.9" id="i-4-10-9">The initial targets should be for transplant, and the final targets for as the plants move into their flowering photoperiod.</li>
+</ol>
+</li>
+<li data-num="4.11" id="i-4-11">
+<p>Lighting should be increased daily, ideally at a rate of 50-100μmol/s per day, roughly averaging to 75μmol/s per day.</p>
+</li>
+<li data-num="4.12" id="i-4-12">
+<p>Plants should have a non-pourous nylon / plastic netting placed over them after approx 1 week of vegetative growth, to allow training of the plant. This is likely to be approx 30-50cm from the top of the rockwool cube / pot, depending on the cultivar.</p>
+<ol class="num-ol">
+<li data-num="4.12.1" id="i-4-12-1">Elastic / fabric netting / rope is never to be used, as this is a magnet for microbial contamination.</li>
+</ol>
+</li>
+<li data-num="4.13" id="i-4-13">
+<p>As growth takes place, training through the netting should too, such that the Apical dominant branch is woven through the trellis to create an even and full canopy cover.</p>
+<ol class="num-ol">
+<li data-num="4.13.1" id="i-4-13-1">The process of &quot;topping&quot; a plant and removing the apically dominant growth with scissors or a scalpel should <em>not</em> be undertaken as a general practice, as this significantly slows the growth to the remainder of the plant.</li>
+<li data-num="4.13.2" id="i-4-13-2">Instead of topping a plant, increasing plant density and shortening vegetative growth time should be used instead.</li>
+<li data-num="4.13.3" id="i-4-13-3">Some genetics will perform best with &quot;multi-topping&quot;, where each plant is topped twice. Although permitted, an increase in plant density is still preferable.</li>
+</ol>
+</li>
+<li data-num="4.14" id="i-4-14">
+<p>Any leaves / cuttings that may need to be trimmed, or resulting biomass from any topping, is to be disposed of in accordance with the appropriate disposal process, ensuring that all cannabis biomass stays separate from general waste.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="5-flowering">5. Flowering</h2>
+<p>During the flowering process is where a lot of the yield and potency is derived.</p>
+<p>Plants that are well defoliated and canopy trained in accordance with the process below should expect to see 40-120%+ useable yield compared to when the plants are left to their own devices. In addition, we've observed a 30-50% increase in cannabinoids on well defoliated plants, as they are better able to make use of a &quot;finishing fade&quot;, and the increased stress from lack of nitrogen. It's this removal of nitrogen that pushes up overall cannabinoid levels in the final week(s) of flowering.</p>
+<p>Defoliation should also be undertaken to ensure a more harmonious application of light to the flower bud-sites, helping ensure a consistency of potency across the flower from top to bottom.</p>
+<ol class="num-ol">
+<li data-num="5.1" id="i-5-1">
+<p>The plants should move to a 12/12 or 13/11 (Lights on / Lights off) photoperiod at the completion of their vegetative growth phase.</p>
+</li>
+<li data-num="5.2" id="i-5-2">
+<p>The following environmental targets should be used during the flowering growth phase:</p>
+<ol class="num-ol">
+<li data-num="5.2.1" id="i-5-2-1">Day Temperature: 21 - 26C (room)</li>
+<li data-num="5.2.2" id="i-5-2-2">Initial Room VPD: 0.9 - 1.0 kPa</li>
+<li data-num="5.2.3" id="i-5-2-3">Final Room VPD: 1.3 - 1.4 kPa</li>
+<li data-num="5.2.4" id="i-5-2-4">Initial PAR: 800 - 1100 μmol/m2/s</li>
+<li data-num="5.2.5" id="i-5-2-5">Final PAR: 1200 - 1300 μmol/m2/s (Depending on the cultivar requirements)</li>
+<li data-num="5.2.6" id="i-5-2-6">CO2: 1500 - 2000ppm</li>
+<li data-num="5.2.7" id="i-5-2-7">The initial targets should be for the first day of each photoperiod phase, and the final targets for the plants as they are ready for harvest.</li>
+<li data-num="5.2.8" id="i-5-2-8">The plants should progressively be acclimated to the PAR targets as quickly as is possible during the flowering period, and are not just a final-day goal.</li>
+</ol>
+</li>
+<li data-num="5.3" id="i-5-3">
+<p>On the first day of flower photoperiod commencing (Or potentially the few days prior depending on the cultivar), an initial defoliation should take place of the plants. This is likely to include the following:</p>
+<ol class="num-ol">
+<li data-num="5.3.1" id="i-5-3-1">The lower half of the plant being stripped bare</li>
+<li data-num="5.3.2" id="i-5-3-2">Removal of any branches that have not grown up to reach the netting</li>
+<li data-num="5.3.3" id="i-5-3-3">Removal of any fan leaves</li>
+<li data-num="5.3.4" id="i-5-3-4">Removal of any leaves / prospective bud-sites that would be blocked by another part of the plant (or is blocking another)</li>
+<li data-num="5.3.5" id="i-5-3-5">Provided the high CO2 environment is in-place, the plants should not need any further &quot;recovery&quot; time.</li>
+<li data-num="5.3.6" id="i-5-3-6">Care should be taken to allocate sufficient time such that the full defoliation can be completed within 2 working days (ideally all within the same day). This is to ensure that the growth, and subsequently the nutrient feed requirements, for all the plants are relatively similar.</li>
+</ol>
+</li>
+<li data-num="5.4" id="i-5-4">
+<p>Any leaves / cuttings are to be disposed of in accordance with the appropriate disposal process, ensuring that all cannabis biomass stays separate from general waste.</p>
+</li>
+<li data-num="5.5" id="i-5-5">
+<p>During the first 3 weeks of the flowering photoperiod (The &quot;stretch&quot; phase), the plant will need regular guidance through the netting to ensure that the branches are not too close to one another, such that when the buds begin to form and grow they will not be packed too tightly and end up with budrot / botrytis.</p>
+</li>
+<li data-num="5.6" id="i-5-6">
+<p>The process of &quot;tucking&quot; and training the plant should take place regularly, and the plant monitored ideally daily to ensure it is well structured and an even canopy.</p>
+<ol class="num-ol">
+<li data-num="5.6.1" id="i-5-6-1">Tucking the plants through the netting during approx the first 10 days of the flower cycle will allow the plant canopy to be more unified prior to the &quot;stretch&quot; phase of flower growth.</li>
+<li data-num="5.6.2" id="i-5-6-2">Anticipating this, cultivators should use the opportunity to ensure the canopy is as uniform as possible such that when the branches stretch upwards they should all be receiving equivalent levels of PAR and are spaced well throughout the netting structure.</li>
+</ol>
+</li>
+<li data-num="5.7" id="i-5-7">
+<p>On or around the 21st day since the change of photoperiod to the flowering phase, a secondary defoliation should take place. This will require the following:</p>
+<ol class="num-ol">
+<li data-num="5.7.1" id="i-5-7-1">Removal of any lower bud-sites that are forming that are underneath where the plant was previously defoliated</li>
+<li data-num="5.7.2" id="i-5-7-2">Removal of any fan leaves</li>
+<li data-num="5.7.3" id="i-5-7-3">Removal of any sugar leaves that are growing trichomes that have a stem longer than approx 1cm</li>
+<li data-num="5.7.4" id="i-5-7-4">Removal of any branches that have &quot;fallen behind&quot; and are not keeping up with the growth of the others</li>
+<li data-num="5.7.5" id="i-5-7-5">The secondary defoliation will likely require more time than the initial defoliation and consideration for the time taken should be afforded to ensure it can take place within 2 working days. This is to ensure that the growth, and subsequently the nutrient feed requirements, for all the plants are relatively similar.</li>
+<li data-num="5.7.6" id="i-5-7-6">Care MUST be taken during defoliation to leave as little additional &quot;stem&quot; on fan-leaves as possible, as these are a leading cause of botrytis growth as the plant dries.</li>
+<li data-num="5.7.7" id="i-5-7-7">During defoliation, any watches or bracelets should be removed to prevent being caught on netting, even if long-sleeved protection is being utilized.</li>
+</ol>
+</li>
+<li data-num="5.8" id="i-5-8">
+<p>No further IPM / foliar spraying should take place after the 21st day of flowering when buds have begun to form, with the possible exception of a light PAA antimicrobial treatment.</p>
+</li>
+<li data-num="5.9" id="i-5-9">
+<p>The VPD should be the primary number that is watched / monitored, with temperature to a certain extent being secondary, and the humidity only used as a measurement to calculate VPD.</p>
+</li>
+<li data-num="5.10" id="i-5-10">
+<p>Perform checks daily of trichome ripeness levels throughout the last 14 days of <em>expected</em> flowering cycles, making plans for harvesting.</p>
+</li>
+<li data-num="5.11" id="i-5-11">
+<p>Where possible, a &quot;finishing fade&quot; should be undertaken during the last 7-14 days (cultivar dependent). This finishing fade contributes to the final &quot;stress&quot; of the plant to increase cannabinoid content as well as other secondary metabolites.</p>
+<ol class="num-ol">
+<li data-num="5.11.1" id="i-5-11-1">This should be the removal of only nitrogen from the feed while maintaining consistent ratios of other micro and macronutrients.</li>
+</ol>
+</li>
+<li data-num="5.12" id="i-5-12">
+<p>A &quot;full flush&quot; with just water should never be undertaken, as this is one of the leading causes of botrytis and bud rot.</p>
+</li>
+</ol>
+<h3 id="crop-steering">Crop steering</h3>
+<p>To achieve the highest potential of any given cultivar, the Cultivator must manipulate the rootzone environment through strategic irrigation events in the flowering cycle. This process, known as Crop Steering, uses moisture levels / Volumetric Water Capacity (vWC) and Electrical Conductivity (EC) to signal the plant to grow either vegetatively (foliage and roots) or generatively (flowers and secondary metabolites).</p>
+<ol start="13" class="num-ol">
+<li data-num="5.13" id="i-5-13">
+<p>Irrigation throughout the &quot;Lights On&quot; cycle is divided into three primary phases to manage the relationship between Volumetric Water Content (VWC%) and Substrate EC:</p>
+<ul>
+<li><strong>Phase 1 (P1):</strong> <em>The &quot;Saturating&quot; phase</em>. Beginning 1-2 hours after lights turn on to allow for &quot;transpiration before irrigation&quot;. Use multiple small shots (2-6% of substrate volume) spaced 15-30 minutes apart until the target runoff is achieved. This avoids &quot;channeling&quot; where water bypasses the medium.</li>
+<li><strong>Phase 2 (P2):</strong> <em>The &quot;Maintenance&quot; phase</em>. Maintenance shots are used to keep the VWC% at a consistent peak level throughout the remainder of the light cycle.</li>
+<li><strong>Phase 3 (P3):</strong> <em>The &quot;Dryback&quot; phase</em>. No irrigation occurs from the final P2 shot until the following day's P1 begins. This allows roots to breathe and prevents pathogens like root rot from developing.</li>
+</ul>
+</li>
+<li data-num="5.14" id="i-5-14">
+<p>Using a substrate sensor such as a THC-S, Teros12 or similar equivalent, insert it at the manufacturer recommended height into the side of the substrate. Multiple sensors should be used throughout each grow room in varying places such as different tables, near the start / end of the table etc.</p>
+<ol class="num-ol">
+<li data-num="5.14.1" id="i-5-14-1">The exact height / location on the side of the substrate will vary, depending on if the substrate is coco coir vs rockwool, coupled with the &quot;pot&quot; size.</li>
+<li data-num="5.14.2" id="i-5-14-2">Ensure that if using coco coir, there is no perlite or vermiculite added, as these will cause drastically incorrect readings.</li>
+</ol>
+</li>
+<li data-num="5.15" id="i-5-15">
+<p>The following table should be used for dryback targets:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Growth Stage</th>
+<th style="text-align:left">Strategy</th>
+<th style="text-align:left">Target Substrate EC</th>
+<th style="text-align:left">Target P3 Dryback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Vegetative</strong></td>
+<td style="text-align:left">Vegetative</td>
+<td style="text-align:left">3.0 - 5.0</td>
+<td style="text-align:left"><strong>25%</strong> (50% for initial soak)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Flower Stretch (W1-4)</strong></td>
+<td style="text-align:left">Generative</td>
+<td style="text-align:left">4.0 - 10.0</td>
+<td style="text-align:left"><strong>40% - 50%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Flower Bulk (W5-7)</strong></td>
+<td style="text-align:left">Vegetative</td>
+<td style="text-align:left">3.5 - 6.0</td>
+<td style="text-align:left"><strong>25% - 40%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Finish / Fade (W8-9)</strong></td>
+<td style="text-align:left">Mixed</td>
+<td style="text-align:left">3.0 - 4.0</td>
+<td style="text-align:left"><strong>40% - 50%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The dryback amounts specified are all relative, <em>not absolute</em>. Examples of dryback amounts are as follows:</p>
+<ul>
+<li><strong>Generative Steering (Flower Stretch/Finish):</strong> If your moisture sensor reads 70% VWC at full saturation, a 50% relative dryback would bring the reading down to 35% VWC before the first shot the next morning.</li>
+<li><strong>Vegetative Steering (Veg/Flower Bulk):</strong> If you are at 70% VWC at peak saturation, a 30% relative dryback would bring the reading to 50% VWC.</li>
+</ul>
+</li>
+<li data-num="5.16" id="i-5-16">
+<p>To promote vegetative growth (encouraging bud swell and taller plants), use larger irrigation shots and shorter overnight drybacks (30-40%). This increases runoff and lowers the substrate EC.</p>
+</li>
+<li data-num="5.17" id="i-5-17">
+<p>To promote generative growth (encouraging quicker flower site formation and compact plants or stacking), use smaller irrigation shots and larger overnight drybacks (40-50%). This restricts runoff and increases substrate EC, a technique known as EC Stacking.</p>
+</li>
+<li data-num="5.18" id="i-5-18">
+<p><strong>NOTE:</strong> A 1-5% dryback should occur after lights turn on but before the first P1 shot to ensure the plant is actively transpiring (This is known as the P0 time).</p>
+</li>
+<li data-num="5.19" id="i-5-19">
+<p>If the substrate is not drying out overnight to the desired amount, irrigation automations should be amended such that the P2 phase finishes earlier in the day allowing for a deeper dryback overnight.</p>
+</li>
+<li data-num="5.20" id="i-5-20">
+<p>The Cultivator should use a Substrate Sensor to monitor vWC% and Pore Water EC (pwEC) in real-time, as opposed to manual insertion of sensors and hand-testing. If the Cultivator is in doubt, add more sensors to the grow, and have the sensors on a mix of largest and smallest plants.</p>
+</li>
+<li data-num="5.21" id="i-5-21">
+<p>As required, manually test the runoff by bringing the substrate to field capacity, then manually performing another irrigation event, such as 50-100mL and capture that 50-100mL runoff from the plant into a tray such as a tinfoil baking tray.</p>
+<ol class="num-ol">
+<li data-num="5.21.1" id="i-5-21-1">The runoff EC will typically be lower than the substrate EC.</li>
+<li data-num="5.21.2" id="i-5-21-2">The runoff pH should be slightly higher than the input solution, indicating healthy nutrient uptake. A lower runoff pH may indicate rootzone saturation or health issues.</li>
+<li data-num="5.21.3" id="i-5-21-3">Refer to the Athena Handbook for further information on precision irrigation / dryback techniques.</li>
+</ol>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="6-harvesting-and-drying">6. Harvesting and drying</h2>
+<ol class="num-ol">
+<li data-num="6.1" id="i-6-1">
+<p>When the plant has approx 15-25% amber trichomes, the plants should be harvested.</p>
+</li>
+<li data-num="6.2" id="i-6-2">
+<p>Clean any shears / scissors to be used in advance with bleach, isopropyl alcohol or similar cleaning + sterilising agents.</p>
+</li>
+<li data-num="6.3" id="i-6-3">
+<p>Run new lines of plastic thread / coathangers / hooks above the cultivation area, so that the plants can be hung to dry. If there is a separate drying area, the preparations can be done there.</p>
+<ol class="num-ol">
+<li data-num="6.3.1" id="i-6-3-1">These thread and coathangers should be plastic or metal only, never wooden / fabric, as that encourages microbial contamination.</li>
+</ol>
+</li>
+<li data-num="6.4" id="i-6-4">
+<p>Dim the lights to make working while hanging easier.</p>
+</li>
+<li data-num="6.5" id="i-6-5">
+<p>Set the room temperature to be as close to 16C as is possible, and set the dehumidification to a target of 30-50% RH.</p>
+<ol class="num-ol">
+<li data-num="6.5.1" id="i-6-5-1">After 1-2 days, adjust the target RH levels for the room to be 60-65% to allow the plant to slowly finish drying out for the remainder.</li>
+</ol>
+</li>
+<li data-num="6.6" id="i-6-6">
+<p>Disable any &quot;photoperiod start / end&quot; automations that would turn lighting on, or would adjust any AC and dehumidification settings.</p>
+</li>
+<li data-num="6.7" id="i-6-7">
+<p>Any oscillating fans should be turned off or ensure they are facing away from the dring flower while providing air movement. Other fans that are not used as carbon filtration, should be temporarily disabled to ensure they do not over-dry the plants.</p>
+</li>
+<li data-num="6.8" id="i-6-8">
+<p>Cut the plant to be harvested as close to the rockwool cube / growing medium as is reasonably possible with the use of shears.</p>
+</li>
+<li data-num="6.9" id="i-6-9">
+<p>Remove the plant from the trellis netting, and hang it upside down on the hooks or coathangers.</p>
+</li>
+<li data-num="6.10" id="i-6-10">
+<p>Any large fan-leaves that have re-grown may be removed at this point as part of a &quot;bucking&quot; process. These are to be disposed of safely and securely in accordance with the relevant Biomass disposal process.</p>
+</li>
+<li data-num="6.11" id="i-6-11">
+<p>Plants should be checked regularly to ensure they do not over-dry. Initially this may happen on a &quot;daily&quot; basis, but after a couple of days this may need to be several times per-day.</p>
+</li>
+<li data-num="6.12" id="i-6-12">
+<p>The dehumidification should then move automatically from the dehumidifiers as the setpoint is reached, to just dehumidification through air conditioning.</p>
+<ol class="num-ol">
+<li data-num="6.12.1" id="i-6-12-1">While checking dryness, if the plants are found to be close enough to 60%aw towards the end of the work-day, then all dehumidification should be disabled overnight so that the plants do not over-dry.</li>
+<li data-num="6.12.2" id="i-6-12-2">Air conditioning should then be set to heat / cool mode, rather than a dry setting.</li>
+</ol>
+</li>
+<li data-num="6.13" id="i-6-13">
+<p>Prior to any trimming, 5 plants should be marked and used as a representative sample. The biomass from each of these plants should be separately weighed, and noted down both independently before trimming, and after trimming, and as part of the final harvest result.</p>
+</li>
+<li data-num="6.14" id="i-6-14">
+<p>If the plants are unable to be trimmed / packed for a period of time, they should go into large Terploc packages and stored inside of large totes.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="7-trimming">7. Trimming</h2>
+<ol class="num-ol">
+<li data-num="7.1" id="i-7-1">
+<p>During the trimming process, ensure that the lights are not at full brightness so as not to damage the flower, while also maintaining adequate visibility in the trimming area.</p>
+</li>
+<li data-num="7.2" id="i-7-2">
+<p>If there is no dedicated area, the room in which cultivation took place, or drying took place, can be utilised.</p>
+</li>
+<li data-num="7.3" id="i-7-3">
+<p>Ensure that the temperature / humidity targets are set as close as possible to 16C and 60% RH.</p>
+</li>
+<li data-num="7.4" id="i-7-4">
+<p>Any scissors should be cleaned prior to use. Ideally scissors that are used for trimming / manicuring should not also be used as part of the day-to-day maintenance and cultivation processes.</p>
+</li>
+<li data-num="7.5" id="i-7-5">
+<p>If the offtake agreement requires that the plants be &quot;stem on&quot;, then cut the branches with shears, such that there is approx 10cm of stem still from the lowest bud on the branch, or in accordance with any specific requirements of the offtake agreement.</p>
+<ol class="num-ol">
+<li data-num="7.5.1" id="i-7-5-1">The resulting branches with bud can then be weighed, and placed into a PVC-lined or Terploc-lined tote, and the lid placed on each respective tote.</li>
+<li data-num="7.5.2" id="i-7-5-2">Ensure that the branches from the representative sample plant weights are noted down separately.</li>
+</ol>
+</li>
+<li data-num="7.6" id="i-7-6">
+<p>If the offtake agreement requires that the plants be manicured, then it will need to be decided if the plants are to be hand-trimmed, machine-trimmed, or a combination of the two.</p>
+<ol class="num-ol">
+<li data-num="7.6.1" id="i-7-6-1">If applicable, set up the trimming machine, ensuring it has been appropriately cleaned and calibrated prior to use.</li>
+<li data-num="7.6.2" id="i-7-6-2">Take the representative sample plants and trim them first.
+<ol class="num-ol">
+<li data-num="7.6.2.1" id="i-7-6-2-1">If they are being passed through a trimming machine, ensure only one at a time is completed.</li>
+<li data-num="7.6.2.2" id="i-7-6-2-2">If they are being hand-trimmed, ensure that only one at a time is being worked on and that it is kept independent from all others.</li>
+</ol>
+</li>
+<li data-num="7.6.3" id="i-7-6-3">If a trimmer is being used, cut off the bud from the main stem to be fed into the Hopper. The majority of larger fan-leaves should have already been defoliated during cultivation so only sugar leaves should be remaining.</li>
+<li data-num="7.6.4" id="i-7-6-4">When all of the bud has gone through the machine, if applicable, they may be either further hand-trimmed, or if required individual buds can be fed through the trimmer machine a second time to ensure a good cut.</li>
+<li data-num="7.6.5" id="i-7-6-5">As the bud comes out of the machine, it should fall into a PVC lined tote.</li>
+</ol>
+</li>
+<li data-num="7.7" id="i-7-7">
+<p>When the flower has been appropriately trimmed (stem on or off) then preparation should be made for packaging in accordance with the offtake agreement requirements.</p>
+</li>
+<li data-num="7.8" id="i-7-8">
+<p>Until the flower is ready to be packed according to buyers' requirements, it should be stored for curing. The use of Grove Terploc two-way breathable bags, tote-liners or drum-liners should be used to ensure the flower is cured and maintains an appropriate level of moisture (~61%).</p>
+</li>
+<li data-num="7.9" id="i-7-9">
+<p>Should an incident arise, and a flower bud is dropped during the Trimming process that is rendered unsuitable for final sale or transportation, the unusable flower material is to be disposed of in accordance with the relevant Biomass disposal process. This is due to microbial contamination and the flower should not be sold.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="8-packaging">8. Packaging</h2>
+<ol class="num-ol">
+<li data-num="8.1" id="i-8-1">
+<p>Where the offtake requires 1lb or 500g lots, arrangements should be made for smaller bags. Where offtake requires 2lb or 1kg lots, arrangements should be made for slightly larger bags.</p>
+<ol class="num-ol">
+<li data-num="8.1.1" id="i-8-1-1">If an offtake agreement is fine with whole-totes or drums being used without further packaging, the number of totes should be ascertained and the weight of each noted.</li>
+</ol>
+</li>
+<li data-num="8.2" id="i-8-2">
+<p>Trade-scales must be utilized for accuracy of weighed product.</p>
+</li>
+<li data-num="8.3" id="i-8-3">
+<p>Trade-scales calibration certificate should be checked to ensure that they are still accurately calibrated. The surface should be level, and the indicator confirms the scales are sufficiently level.</p>
+<ol class="num-ol">
+<li data-num="8.3.1" id="i-8-3-1">If the scales are outside of their calibration accuracy period, Wedderburn should be contacted, or the manufacturer of the scales, to have them calibrated prior to any further work commencing.</li>
+</ol>
+</li>
+<li data-num="8.4" id="i-8-4">
+<p>Each individual package should be appropriately weighed out, and then vacuum-sealed. This means the package should be air-tight, under inert pressure, but should not be vacuumed such that all the air is removed from it.</p>
+</li>
+<li data-num="8.5" id="i-8-5">
+<p>Label each container / bag as &quot;Medicinal Cannabis&quot;, with the company name, the cultivar name, date of harvest, net weight, date of packaging, and the bag number for the pack starting at 1. Once labelled, move it to be appropriately stored until it can be delivered to the offtake buyer.</p>
+</li>
+<li data-num="8.6" id="i-8-6">
+<p>Should an incident arise, and a flower bud is dropped during the Packaging process that is rendered unsuitable for final sale or transportation, the unusable flower material is to be disposed of in accordance with the relevant disposal process. This is due to microbial contamination and the flower should not be sold.</p>
+</li>
+<li data-num="8.7" id="i-8-7">
+<p>Transfer the packaged cannabis into the secure storage area as applicable, until it is ready for transportation.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="9-testing">9. Testing</h2>
+<p>Following a harvest, the dried and cured biomass will need to be tested to ensure that it meets the requirements for any offtake agreement, such as THC / CBD levels.</p>
+<p>Where the offtake agreement requires NZ MQS testing, testing laboratories must be GMP accredited or accredited to ISO 17025 for the test methods specified in the NZ MQS and hold a licence that entitles the laboratory to receive cannabis i.e., a Controlled Drug licence or a Medicinal Cannabis Licence with Possess for Manufacturing Activity in New Zealand.</p>
+<p>If NZ MQS testing is not a requirement for the offtake agreement, final testing may be carried out by the recipient of the starting materials specified in the offtake agreement, or by an entity of their choosing.</p>
+<p>Laboratories performing &quot;critical&quot; tests for assessment for compliance with the NZ MQS must be GMP accredited, and should be appropriately vetted prior to sending samples for testing.</p>
+<p>Approved Laboratories are included in the list of Approved Recipients (see the Chill Division Security Policies &amp; Procedures).</p>
+<ol class="num-ol">
+<li data-num="9.1" id="i-9-1">
+<p>Record the weight of all samples taken.</p>
+</li>
+<li data-num="9.2" id="i-9-2">
+<p>Cannabis sent to a testing facility in the greater Auckland area may be driven by staff, with the appropriate shipping procedures undertaken, such as an accompanying Chain of Custody document.</p>
+</li>
+<li data-num="9.3" id="i-9-3">
+<p>Use a 3rd-party courier company to transport cannabis samples sent to a laboratory outside of Auckland, or internationally, however this still requires a Chain of Custody.</p>
+</li>
+<li data-num="9.4" id="i-9-4">
+<p>Take a sample from the smaller bag containing part-pound/excess amounts for initial indicator testing.</p>
+</li>
+<li data-num="9.5" id="i-9-5">
+<p>Take a sample representative of the batch to meet the requirements of the New Zealand MQS, following the sampling plan in Chapter 2.8.20 Herbal Drugs: sampling and sample preparation of the European Pharmacopeia Volume 10 to meet the requirements of the NZ MQS.</p>
+</li>
+<li data-num="9.6" id="i-9-6">
+<p>A sample representative of the batch is taken as follows:</p>
+<ol class="num-ol">
+<li data-num="9.6.1" id="i-9-6-1">
+<p>Calculate the size of the bulk sample required for the size of the batch of flowers.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Mass of Cannabis in batch (kg)</th>
+<th style="text-align:left">Bulk Sample Size as % of the batch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">&lt; 50</td>
+<td style="text-align:left">1.00*</td>
+</tr>
+<tr>
+<td style="text-align:left">50 - 100</td>
+<td style="text-align:left">0.50</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt; 100 - 250</td>
+<td style="text-align:left">0.25</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt; 250 - 500</td>
+<td style="text-align:left">0.20</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt; 500 - 1000</td>
+<td style="text-align:left">0.18</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt; 2500 - 5000</td>
+<td style="text-align:left">0.15</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt; 5000 - 10000</td>
+<td style="text-align:left">0.10</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt;10000 - 25000</td>
+<td style="text-align:left">0.08</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li data-num="9.6.2" id="i-9-6-2">
+<p>If the batch size is greater than 250,000kg, divide into sub-batches &lt; 250,000kg and sample each sub-batch as above.</p>
+</li>
+<li data-num="9.6.3" id="i-9-6-3">
+<p>The sample size must be at least 125g.</p>
+</li>
+<li data-num="9.6.4" id="i-9-6-4">
+<p>For example:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Sample size for a 25kg batch</th>
+<th style="text-align:left">= 25kg x 1%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 0.25kg</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 250g</td>
+</tr>
+<tr>
+<td style="text-align:left">Sample size for 600kg batch</td>
+<td style="text-align:left">= 600kg x 0.18%</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 1.08kg</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 1080g</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li data-num="9.6.5" id="i-9-6-5">
+<p>Calculate the number of containers to sample:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Number of containers in batch (N)</th>
+<th style="text-align:left">Number of containers to sample (n)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1-3</td>
+<td style="text-align:left">all</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt; 3</td>
+<td style="text-align:left">n* = √N+1</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li data-num="9.6.6" id="i-9-6-6">
+<p>* where n is rounded up to the nearest integer.</p>
+</li>
+<li data-num="9.6.7" id="i-9-6-7">
+<p>For example:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">25 bags in batch</th>
+<th style="text-align:left">= √25 + 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 5 + 1</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 6 bags to sample</td>
+</tr>
+<tr>
+<td style="text-align:left">300 bags in batch</td>
+<td style="text-align:left">= √300 + 1</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 17.3 + 1</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 18.3</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 19 bags to sample (rounded up to nearest integer)</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li data-num="9.6.8" id="i-9-6-8">
+<p>Divide the total sample size from (i) by the number of containers to be sampled from (ii) to calculate the amount to be taken from each container.</p>
+</li>
+<li data-num="9.6.9" id="i-9-6-9">
+<p>For example:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">25kg batch in 25 bags of 1kg</th>
+<th style="text-align:left">= 250g ÷ 6 bags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 41.67g per bag</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 42g per bag</td>
+</tr>
+<tr>
+<td style="text-align:left">600kg batch in 300 bags of 2kg</td>
+<td style="text-align:left">= 1080g ÷ 19 bags</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 56.84g per bag</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">= 57g per bag</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li data-num="9.6.10" id="i-9-6-10">
+<p>Randomly select the required number of containers from throughout the batch.</p>
+</li>
+<li data-num="9.6.11" id="i-9-6-11">
+<p>Take one sample from each selected container. The sample is taken from the upper, middle and lower sections of the container so that the sample is representative of the different parts of the container.</p>
+</li>
+<li data-num="9.6.12" id="i-9-6-12">
+<p>Place a Sampled label on each container and record the date sampled and the amount taken.</p>
+</li>
+<li data-num="9.6.13" id="i-9-6-13">
+<p>Prepare the bulk sample by combining and thoroughly mixing the samples from each of the randomly selected containers.</p>
+</li>
+<li data-num="9.6.14" id="i-9-6-14">
+<p>Prepare the testing sample by reducing the size of the bulk sample by quartering if required. To quarter the bulk sample, place the mixed bulk sample in a level, square shaped heap and divide the heap diagonally into 4 equal sized parts. Take 2 opposite quarters and remix. Repeat the process as many times as needed until the minimum sample size for testing is obtained. The minimum test sample size for flowers is 250g or the entire sample if the bulk sample is less than 250g.</p>
+</li>
+<li data-num="9.6.15" id="i-9-6-15">
+<p>Keep the remaining bulk sample as a retention sample.</p>
+</li>
+<li data-num="9.6.16" id="i-9-6-16">
+<p>Pass the test sample through a 1mm sieve ONCE. A maximum of 10% of the test sample may be left on the sieve, and a maximum of 2% of the total test sample may be bigger than 1.5mm in size.</p>
+</li>
+<li data-num="9.6.17" id="i-9-6-17">
+<p>Remix the sieve and retained portions of the sample, then send to the laboratory for testing.</p>
+</li>
+<li data-num="9.6.18" id="i-9-6-18">
+<p>The testing sample may be split to send to different laboratories for testing if required.</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="hop-latent-viroid-testing">Hop Latent Viroid testing</h3>
+<ol start="7" class="num-ol">
+<li data-num="9.7" id="i-9-7">
+<p>Testing for HLVd should be undertaken regularly to ensure no contamination of plant materials has taken place. Regular testing ensures an early warning of any issues that may take place.</p>
+</li>
+<li data-num="9.8" id="i-9-8">
+<p>This shall be undertaken either:</p>
+<ol class="num-ol">
+<li data-num="9.8.1" id="i-9-8-1">Within a minimum of 1 month prior to sending any live clones to another licence holder if purchased</li>
+<li data-num="9.8.2" id="i-9-8-2">Within a month of sending partially or field-dried plants to another facility to complete the drying process</li>
+<li data-num="9.8.3" id="i-9-8-3">Every 3-6 months otherwise</li>
+</ol>
+</li>
+<li data-num="9.9" id="i-9-9">
+<p>DNA samples shall be tested in accordance with testing laboratory specifications, but should include:</p>
+<ol class="num-ol">
+<li data-num="9.9.1" id="i-9-9-1">DNA samples taken from the top-most sugar leaf</li>
+<li data-num="9.9.2" id="i-9-9-2">DNA samples taken from the lower fan leaves</li>
+<li data-num="9.9.3" id="i-9-9-3">DNA samples taken from the rootmass</li>
+</ol>
+</li>
+<li data-num="9.10" id="i-9-10">
+<p>This ensures that a broad range of samples are taken, as the viroid can be difficult to detect even with qPCR and similar testing methodologies. This is due to how the viroid moves around the plant.</p>
+</li>
+<li data-num="9.11" id="i-9-11">
+<p>Should a test result come back positive, the genetics may be sent off for Tissue Culture sterilization of at least 3x Tissue Culture runs.</p>
+</li>
+<li data-num="9.12" id="i-9-12">
+<p>All other live plants should be destroyed immediately, any and all surfaces that may have come into contact with any form of human touch cleaned with Bleach concentrate + Peracetic Acid.</p>
+<ol class="num-ol">
+<li data-num="9.12.1" id="i-9-12-1">This includes scissors, measuring equipment etc.</li>
+</ol>
+</li>
+<li data-num="9.13" id="i-9-13">
+<p>Prior to receiving new / clean genetics, the genetics shall be tested for HLVd and a negative test result returned.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="10-cleaning-room-reset">10. Cleaning / room reset</h2>
+<p>There are two stages the grower should think of for every aspect of &quot;cleaning&quot;:</p>
+<ol class="num-ol">
+<li data-num="10.1" id="i-10-1">Scrubbing / removing debris / cleaning</li>
+<li data-num="10.2" id="i-10-2">Sanitize / sterilize</li>
+</ol>
+<p>At all times when cleaning, it is important to be mindful that both steps take place to ensure that additional bio-burden is not present which may impact the plants / flower.</p>
+<p>Post-harvest, each cultivation room should go through a full &quot;reset&quot; of the room, cleaned such that it is as-new.</p>
+<ol class="num-ol">
+<li data-num="10.1" id="i-10-1-1">
+<p>Cover any sensors that are not able to get wet. Use a ziplock bag or similar over them, with the cables coming out of the bottom of the bag.</p>
+<ol class="num-ol">
+<li data-num="10.1.1" id="i-10-1-1">Ensure that there is a loop of any cable coming out of the bottom of the bag, such that if it gets water on it, gravity will take the water away from the sensor.</li>
+<li data-num="10.1.2" id="i-10-1-2">If needed, tape the bag temporarily to something nearby to secure it and prevent it falling.</li>
+</ol>
+</li>
+<li data-num="10.2" id="i-10-2-1">
+<p>Clear larger debris away, such as any leaves / stems that may be remaining.</p>
+</li>
+<li data-num="10.3" id="i-10-3">
+<p>If necessary, remove loose irrigation items such as netbows or rockwool caps.</p>
+<ol class="num-ol">
+<li data-num="10.3.1" id="i-10-3-1">These can be cleaned and then sterilised in a large tub or sink.</li>
+<li data-num="10.3.2" id="i-10-3-2">A brush may need to be used to appropriately remove any debris, at the staffs discretion.</li>
+</ol>
+</li>
+<li data-num="10.4" id="i-10-4">
+<p>Ensure there are no other materials in the room which will be impacted if they get wet.</p>
+</li>
+<li data-num="10.5" id="i-10-5">
+<p>The room should be sprayed down at pressure, such as with a low pressure sprayer, using an attachment with a cleaning agent. This includes the walls, floor, flood / tray tables etc.</p>
+<ol class="num-ol">
+<li data-num="10.5.1" id="i-10-5-1">This cleaning agent may be Sugar Soap, Osmoslay or similar.</li>
+<li data-num="10.5.2" id="i-10-5-2">Ensure that appropriate PPE is used such as overalls, gloves, mask etc during this process.</li>
+</ol>
+</li>
+<li data-num="10.6" id="i-10-6">
+<p>Once the room has been sprayed down, spot-clean any remaining marks with a cloth, scrubbing brush, or scouring pad as required.</p>
+</li>
+<li data-num="10.7" id="i-10-7">
+<p>Ensure any remaining water / runoff from the cleaning has been appropriately mopped up or disposed of.</p>
+</li>
+<li data-num="10.8" id="i-10-8">
+<p>The room should then be sprayed with something such as Peracetic Acid at 0.3% dilution rate, in order to sanitize the room.</p>
+<ol class="num-ol">
+<li data-num="10.8.1" id="i-10-8-1">Ensure that appropriate PPE is used such as overalls, gloves, mask etc during this process.</li>
+</ol>
+</li>
+<li data-num="10.9" id="i-10-9">
+<p>Ensure any surplus water has been appropriately mopped up or disposed of, and then allow the room to dry out prior to moving in any new plants. This is to ensure that the humidity levels are not adversely impacted by any water remaining.</p>
+</li>
+<li data-num="10.10" id="i-10-10">
+<p>Run a solution of Hypochlorous Acid through any feed-lines, measuring the runoff to ensure that the EC is as expected and there are no remaining nutrients from a previous growth cycle coming through.</p>
+<ol class="num-ol">
+<li data-num="10.10.1" id="i-10-10-1">Start by removing the nutrient reservoir supply and feeding straight RO water through the pipes.</li>
+<li data-num="10.10.2" id="i-10-10-2">Measure runoff by selecting the location furthest from the pump, fill a small measuring cup with 100mL runoff then check the EC.</li>
+<li data-num="10.10.3" id="i-10-10-3">Empty the measuring cup and repeat until the EC measures =&lt; 0.2 EC. This accounts for any salts that may be being purged with the RO feed.</li>
+<li data-num="10.10.4" id="i-10-10-4">Then fill a reservoir / bucket with RO water and a concentrate of Hypochlorous Acid. If this concentrate is at 0.4 EC above source water you will know when the Hypochlorous Acid has reached the drippers. This feed of Hypochlorous Acid mix will ensure the removal of any salt buildup.</li>
+<li data-num="10.10.5" id="i-10-10-5">Repeat again with RO water until it measures =&lt; 0.2 EC, then repeat the previous step with Peracetic Acid to sterilize the lines.</li>
+<li data-num="10.10.6" id="i-10-10-6">Reattach the main reservoir feed with the appropriate nutrients (Vege / Flower etc) and continue to purge the lines until they show the correct EC.</li>
+</ol>
+</li>
+<li data-num="10.11" id="i-10-11">
+<p>Remove any coverings from sensors, re-apply any growing medium probes, and check each sensors readings for consistency and updates.</p>
+</li>
+<li data-num="10.12" id="i-10-12">
+<p>If required, a mix of nutrients should be placed in a large bucket / tote to prepare rockwool cubes or rehydrate coco, in accordance with manufacturer specifications. This is to prevent channelling of liquid through a completely dry growing medium.</p>
+</li>
+<li data-num="10.13" id="i-10-13">
+<p>Rockwool cubes / coco coir may then be placed on the trays and any caps setup again, with the intention of preparing them for a new growth cycle. A top-down feed of nutrients can then be flushed through them to reach saturation point.</p>
+</li>
+<li data-num="10.14" id="i-10-14">
+<p>A heat treatment may also be conducted whereby the Air Conditioning is set to maximum heat and lights turned on to full, for a period of 30-60 minutes. This will assist with drying out the room but also killing specific types of mites once a room temperature of 40C+ is reached.</p>
+</li>
+<li data-num="10.15" id="i-10-15">
+<p>If applicable, any automations for Photoperiod Begin / End may now be re-enabled.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="11-pest-management-ipm">11. Pest management / IPM</h2>
+<p>The Integrated Pest Management plan is aimed at most pests and diseases; however plants may still come with a variety of conditions, such as fungal / bacterial infection, or bug / mite infestation. These will require treatment of any individually affected plants with an approved pesticide product in accordance with Misuse of Drugs (Medicinal Cannabis) Regulations 2019. A list of acceptable pesticides is published on the Ministry of Health website.</p>
+<h3 id="foliar-spray">Foliar spray</h3>
+<ol class="num-ol">
+<li data-num="11.1" id="i-11-1">
+<p>All pesticides will be used in accordance with manufacturer instructions, including any withholding periods, to ensure harvested cannabis meets the pesticide residue requirements of the NZ MQS and/or customers.</p>
+<ol class="num-ol">
+<li data-num="11.1.1" id="i-11-1-1">Pesticides must have on-label use for cannabis crops, or, no limits on off-label usage as-per the <a href="https://www.health.govt.nz/regulation-legislation/medicinal-cannabis/information-for-industry/pesticide-use-during-cultivation#toc-0-1">Ministry of Health guidance</a>.</li>
+<li data-num="11.1.2" id="i-11-1-2">Alternatively, the pesticide must meet the requirements set out in the Specified pesticide active ingredients list, with additional attention given to section 1.1.2 of the Australia New Zealand Food Standards Code where applicable.</li>
+</ol>
+</li>
+<li data-num="11.2" id="i-11-2">
+<p>Plants shall only be treated during mothering, cloning, vegetative growth and up until the 21st day of flowering. No further treatment should take place after that.</p>
+<ol class="num-ol">
+<li data-num="11.2.1" id="i-11-2-1">Sulphur should be only be used on mothers and during vegetative growth, not during flowering.</li>
+</ol>
+</li>
+<li data-num="11.3" id="i-11-3">
+<p>IPM / Foliar must be undertaken at least weekly as a preventative measure with Athena IPW and Sulphur.</p>
+<ol class="num-ol">
+<li data-num="11.3.1" id="i-11-3-1">It may be undertaken up to 3x per-week when acting curatively, with small / low pest levels.</li>
+<li data-num="11.3.2" id="i-11-3-2">For serious infestations that occur after Day 21 of flower, the impacted plants / season should be pulled and destroyed in their entirety.</li>
+<li data-num="11.3.3" id="i-11-3-3">Where Sulphur is used, it should be at 1-3 tablespoons per litre, preferably 3 tablespoons, and should only be applied a maximum of once every 2 weeks.</li>
+</ol>
+</li>
+<li data-num="11.4" id="i-11-4">
+<p>Foliar spray should be undertaken when the growing media is fully saturated, such as the transition from P1 to P2 irrigation, to ensure that the IPM is not absorbed through the leaves.</p>
+<ol class="num-ol">
+<li data-num="11.4.1" id="i-11-4-1">When done during lights-off during flower to avoid burning, it should be done at the transition from P2 to P3 and the growing media specifically fully saturated with nutrients again to prevent absorption of the IPM through the leaves.</li>
+</ol>
+</li>
+<li data-num="11.5" id="i-11-5">
+<p>When done by hand, foliar spray should always ensure that the top of the media is first sprayed, then up the stalk, underside of the leaves, then the top of the plant.</p>
+<ol class="num-ol">
+<li data-num="11.5.1" id="i-11-5-1">It is recommended to use a battery-powered sprayer such as the Ryobi 18V One+ 15L Backpack Chemical Sprayer.</li>
+<li data-num="11.5.2" id="i-11-5-2">It is recommended to use a separate sprayer for each type of pesticide to ensure no cross-contamination occurs.</li>
+<li data-num="11.5.3" id="i-11-5-3">If alternative sprayers are used, care must be taken to ensure there are no metallic hose clamps inside the sprayer which may rust and cause a failure in heavy metals testing.</li>
+</ol>
+</li>
+<li data-num="11.6" id="i-11-6">
+<p>No other foliar spraying should take place with any other products, such that it may jeopardize the integrity of the plant and risk failure of NZMQS testing. Almost all commonly encountered pests such as aphids, broadmites, russet mites, fungus gnats, thrips, aphids, spidermites, and whiteflies can be treated with this two-pronged approach (predominantly Citric Acid and Sulphur), and as-such there should be no need for any other foliar application.</p>
+<ol class="num-ol">
+<li data-num="11.6.1" id="i-11-6-1">This includes foliar spraying with other nutrients and bacteria-based supplements, which may cause failure of the NZMQS.</li>
+</ol>
+</li>
+</ol>
+<h3 id="beneficial-bugs">Beneficial bugs</h3>
+<p>Beneficial bugs may be used, as they are mostly harmless themselves to the cannabis plant at all stages of growth. This can be done instead of, or in addition to regular IPM spraying at the cultivators discretion.</p>
+<ol start="7" class="num-ol">
+<li data-num="11.7" id="i-11-7">
+<p>Beneficial bugs can also be released regularly into the environment, in accordance with the suppliers instructions for bug management / pest control. This may be proactively undertaken, or reactively.</p>
+</li>
+<li data-num="11.8" id="i-11-8">
+<p>Should there be no Aphids, Spider Mites or similar for the beneficial bugs to feed on, they will simply die off and fall to the ground as part of their life cycle and leave the plant unharmed.</p>
+</li>
+<li data-num="11.9" id="i-11-9">
+<p>Care should be taken to ensure that any treatment / application of beneficial bugs will not get into the irrigation system. Release-boxes or similar that can be hung on a plant leaf should be utilised to minimise the amount of bugs and their accompanying media that falls into the trays / irrigation / wastewater system.</p>
+</li>
+</ol>
+<h3 id="supplementary-pest-control-measures">Supplementary pest control measures</h3>
+<ol start="10" class="num-ol">
+<li data-num="11.10" id="i-11-10">
+<p>Yellow sticky traps should be used as a preventative measure, both as an early-warning visible detection system but also to catch any stray fungus gnats / aphids etc. These should be placed at the base of the plant stem, or in accordance with manufacturer recommendations.</p>
+</li>
+<li data-num="11.11" id="i-11-11">
+<p>Further measures may be taken outside of the growspace, such as rodent traps.</p>
+</li>
+<li data-num="11.12" id="i-11-12">
+<p>In order to preserve the integrity of the flowers, the Pest Management solution shall not include fumigators or other such airborne methods of control anywhere in the facility, which may inadvertently end up reaching the cultivation rooms.</p>
+</li>
+</ol>
+</section>
+<section class="chapter"><h2 id="12-nutrient-mixing-storage-and-handling">12. Nutrient mixing, storage, and handling</h2>
+<h3 id="nutrient-mixing">Nutrient mixing</h3>
+<ol class="num-ol">
+<li data-num="12.1" id="i-12-1">
+<p>Care should be given to the nutrient selection, particularly in regards to possible heavy metals that the plants may absorb. Known nutrient brands that have passed NZMQS are Athena and Front Row, though others may be selected after careful consideration to the implications.</p>
+</li>
+<li data-num="12.2" id="i-12-2">
+<p>Staff should ensure that gloves are not torn and provide adequate protection prior to commencement of the nutrient mixing procedures. When handling nutrients, additional protection may be required over the standard nitrile gloves.</p>
+</li>
+<li data-num="12.3" id="i-12-3">
+<p>At all times, a feed chart should be posted on the wall, or within easy access of staff for following.</p>
+</li>
+<li data-num="12.4" id="i-12-4">
+<p>Nutrients shall always be kept in a labelled bottle, container, jug, tub, tote or barrel with a lid firmly affixed, to prevent any contamination / evaporation.</p>
+</li>
+<li data-num="12.5" id="i-12-5">
+<p>Ensure there is a dedicated measurement device for each, so as to not cross-contaminate (for example, between Part A vs Part B, or Core vs Bloom nutrients), any excess concentrate can be returned to the nutrient supply container.</p>
+<ol class="num-ol">
+<li data-num="12.5.1" id="i-12-5-1">This applies to measuring jugs, syringes, as well as any concentrate containers.</li>
+</ol>
+</li>
+<li data-num="12.6" id="i-12-6">
+<p>RO water must always be used, to ensure <em><strong>no heavy metal contaminants</strong></em> come through on the water to impact plants and cause a failure under the NZMQS standards.</p>
+<ol class="num-ol">
+<li data-num="12.6.1" id="i-12-6-1">Where RO water is unavailable, a 3-stage + UV filtration setup may be a suitable substitute.</li>
+</ol>
+</li>
+<li data-num="12.7" id="i-12-7">
+<p>Care must be taken when mixing to ensure the vendors guidelines are followed regarding the mix-order. Often Silica / pH Up should be added first, followed by the Part B / Bloom / Grow nutrients, and the Part A / Core / Fade added last. This is to prevent calcium being added to a high pH solution which can cause precipitation.</p>
+</li>
+<li data-num="12.8" id="i-12-8">
+<p>Nutrients may either be mixed into an existing batch tank, provided any feeding automations are temporarily disabled, or mixed into a secondary batch tank to then be pumped into the main tank afterwards.</p>
+</li>
+<li data-num="12.9" id="i-12-9">
+<p>Where mixing is being done manually, or for stock tank mixing, a strong drill with a large sized paint mixer should be used. Smaller mixers with a diameter of 6-8cm may be insufficient, and a larger 12-15cm diameter paint or gib-mixer will likely be optimal.</p>
+</li>
+<li data-num="12.10" id="i-12-10">
+<p>After all interactions with nutrients, fresh gloves should be put on to ensure that no contamination from nutrient concentration / feed mixes interacts with the plants.</p>
+</li>
+<li data-num="12.11" id="i-12-11">
+<p>Pouring of nutrients should never be physically done &quot;over top of&quot; any reservoirs or stock mixes, for example when pouring from a pH Up bottle into a measuring cup. This should be done over top of a level bench or similar, to ensure that in the event of any spillage it does not contaminate the nutrients physically below it.</p>
+</li>
+<li data-num="12.12" id="i-12-12">
+<p>Should any amount be spilled, this is to be cleaned immediately with a disposable cloth and wiped down with additional cleaning solution. This includes clothing or skin contact.</p>
+</li>
+</ol>
+<h3 id="nutrient-storage-and-handling">Nutrient storage and handling</h3>
+<p>Proper storage and handling of all nutrients are critical to maintain a safe working environment and ensure the efficacy of the products. All personnel must adhere to the following procedures to prevent accidents, contamination, and degradation of nutrient stocks.</p>
+<ol start="13" class="num-ol">
+<li data-num="12.13" id="i-12-13">
+<p>All nutrient containers must be clearly labeled with the product name and any relevant hazard information. Unlabeled containers are a safety risk and are strictly prohibited.</p>
+</li>
+<li data-num="12.14" id="i-12-14">
+<p>Nutrients shall be stored in a cool, dry, and well-ventilated area, away from direct sunlight, grow-lights, and extreme temperatures.</p>
+</li>
+<li data-num="12.15" id="i-12-15">
+<p>All nutrient containers must be kept tightly sealed when not in use to prevent contamination, evaporation, and spillage.</p>
+</li>
+<li data-num="12.16" id="i-12-16">
+<p>A dedicated and clearly marked area should be designated for nutrient storage. This area must be kept clean, organized, and free of clutter to allow for safe access and handling.</p>
+</li>
+<li data-num="12.17" id="i-12-17">
+<p>&quot;First-In, First-Out&quot; (FIFO) inventory management should be practiced to ensure that older stock is used before new stock, preventing product expiration and degradation.</p>
+</li>
+<li data-num="12.18" id="i-12-18">
+<p>Separate measuring tools (scoops, jugs, syringes) must be used for each nutrient to avoid cross-contamination. These tools should be cleaned and dried thoroughly after each use.</p>
+<ol class="num-ol">
+<li data-num="12.18.1" id="i-12-18-1">For example, the &quot;Core&quot; or &quot;Part A&quot; jug should never be used with &quot;Bloom&quot; or &quot;pH up&quot; solution.</li>
+</ol>
+</li>
+<li data-num="12.19" id="i-12-19">
+<p>Personal Protective Equipment (PPE), including safety glasses and gloves, must be worn when handling all nutrients.</p>
+</li>
+</ol>
+<h3 id="specific-nutrient-storage-and-handling">Specific nutrient storage and handling</h3>
+<h4 id="athena-pro-line-pro-core-pro-grow-pro-bloom-and-fade">Athena Pro Line (Pro Core, Pro Grow, Pro Bloom) and Fade</h4>
+<ol start="20" class="num-ol">
+<li data-num="12.20" id="i-12-20">
+<p>These products should be stored away from acids (such as Athena Reset), bases, and reducing agents.</p>
+</li>
+<li data-num="12.21" id="i-12-21">
+<p>While not considered flammable, these products may decompose at high temperatures and release hazardous fumes. Store away from heat sources and open flames.</p>
+</li>
+<li data-num="12.22" id="i-12-22">
+<p>Athena Pro Core is an oxidizer and presents a fire and explosion risk if it comes into contact with combustible materials. It should be stored separately from flammable and combustible materials.</p>
+</li>
+<li data-num="12.23" id="i-12-23">
+<p>Athena Fade can cause serious eye damage. Immediate and thorough rinsing is critical in case of eye contact.</p>
+</li>
+</ol>
+<h4 id="athena-blended-balance-and-pro-balance-ph-adjusters">Athena Blended Balance and Pro Balance (pH Adjusters)</h4>
+<ol start="24" class="num-ol">
+<li data-num="12.24" id="i-12-24">
+<p>Athena Blended Balance (Potassium Silicate) is alkaline and can cause eye irritation. It should be stored away from acids (such as Athena Reset) to prevent a neutralization reaction.</p>
+</li>
+<li data-num="12.25" id="i-12-25">
+<p>Athena Pro Balance (Potassium Carbonate) is a stronger base and is corrosive. It can cause severe skin and eye irritation.</p>
+</li>
+<li data-num="12.26" id="i-12-26">
+<p>If using Pro Balance in late-flower as a cost-saving measure, extreme care must be taken. Due to its corrosive nature, it should be handled with enhanced PPE, including chemical-resistant gloves and a face shield.</p>
+</li>
+<li data-num="12.27" id="i-12-27">
+<p>Crucially, pH adjusters (Blended Balance and Pro Balance) must be stored separately from all other acidic nutrients and cleaning agents (such as Athena Reset). Mixing these substances can result in a violent chemical reaction, releasing heat and potentially hazardous gases. A physical barrier or significant distance should be maintained between these products in the storage area.</p>
+</li>
+<li data-num="12.28" id="i-12-28">
+<p>Pro Balance should only ever be mixed with cold water. It will heat up during mixing so should be diluted slowly, and in accordance with manufacturer instructions.</p>
+</li>
+</ol>
+<h3 id="nutrient-spill-management">Nutrient spill management</h3>
+<p>In the event of a nutrient spill, the following procedures must be followed immediately to ensure safety and prevent environmental contamination.</p>
+<h4 id="dry-spills-e-g-pro-core-pro-grow-pro-bloom">Dry spills (e.g., Pro Core, Pro Grow, Pro Bloom)</h4>
+<ol start="29" class="num-ol">
+<li data-num="12.29" id="i-12-29">
+<p>Restrict Access: Immediately cordon off the spill area to prevent personnel from walking through the material.</p>
+</li>
+<li data-num="12.30" id="i-12-30">
+<p>Ventilate the Area: If the spill occurs in an enclosed space, ensure adequate ventilation.</p>
+</li>
+<li data-num="12.31" id="i-12-31">
+<p>Wear Appropriate PPE: At a minimum, safety goggles and gloves should be worn. For larger spills, respiratory protection (e.g., a respirator compliant with Australian/New Zealand Standard AS/NZS 1716) may be necessary to avoid inhaling dust.</p>
+</li>
+<li data-num="12.32" id="i-12-32">
+<p>Containment and Cleanup: Carefully sweep or vacuum the spilled material to avoid creating airborne dust.</p>
+</li>
+<li data-num="12.33" id="i-12-33">
+<p>Place the collected material into a clean, dry, and appropriately labeled container for disposal.</p>
+</li>
+<li data-num="12.34" id="i-12-34">
+<p>Final Cleaning: Wipe the spill area with a damp cloth to remove any remaining residue. Dispose of all contaminated cleaning materials safely.</p>
+</li>
+<li data-num="12.35" id="i-12-35">
+<p>Reporting: Report the spill to the facility supervisor.</p>
+</li>
+</ol>
+<h4 id="liquid-spills-e-g-fade-blended-balance-reset-ipw-or-stock-concentrates">Liquid spills (e.g., Fade, Blended Balance, Reset, IPW), or stock concentrates</h4>
+<ol start="36" class="num-ol">
+<li data-num="12.36" id="i-12-36">
+<p>Restrict Access: Secure the area to prevent further contamination.</p>
+</li>
+<li data-num="12.37" id="i-12-37">
+<p>Wear Appropriate PPE: Chemical-resistant gloves, safety goggles, and protective clothing are required.</p>
+</li>
+<li data-num="12.38" id="i-12-38">
+<p>Containment: Stop the source of the leak if it is safe to do so.</p>
+</li>
+<li data-num="12.39" id="i-12-39">
+<p>For larger spills, use an inert absorbent material like sand, earth, or vermiculite to create a dike and contain the spill.</p>
+</li>
+<li data-num="12.40" id="i-12-40">
+<p>Cleanup: Absorb the spilled liquid with non-combustible, inert material.</p>
+</li>
+<li data-num="12.41" id="i-12-41">
+<p>Place the contaminated absorbent material into a designated, labeled container for disposal.</p>
+</li>
+<li data-num="12.42" id="i-12-42">
+<p>Final Cleaning: Clean the spill surface thoroughly with water to remove any residual contamination. Ensure runoff does not enter drains or waterways.</p>
+</li>
+</ol>
+<h4 id="spills-of-reset-peroxyacetic-acid">Spills of Reset (Peroxyacetic Acid)</h4>
+<p>These steps are to be taken in addition to the Liquid Spills steps.</p>
+<ol start="43" class="num-ol">
+<li data-num="12.43" id="i-12-43">
+<p>This is an oxidizer and corrosive. Avoid contact with combustible materials.</p>
+</li>
+<li data-num="12.44" id="i-12-44">
+<p>Neutralize small spills with soda ash before absorbing.</p>
+</li>
+<li data-num="12.45" id="i-12-45">
+<p>Reporting: Report the spill to the facility supervisor and document the incident.</p>
+</li>
+</ol>
+<hr />
+</section>
+<section class="chapter"><h2 id="changelog">Changelog</h2>
+<ul>
+<li>v3.0 unified release. The original combined document was split into three parts, plus an additional Automations Guide.</li>
+</ul>
+</section>
+
+    <div class="pager">
+      <button id="prevCh" type="button">&larr; Previous</button>
+      <span class="pager-label" id="pagerLabel"></span>
+      <button id="nextCh" type="button">Next &rarr;</button>
+    </div>
+
+    <footer class="docfooter">
+      <span>Chill Division Cultivation SOP v3.0 &middot; Generated 2026-07-08 &middot; Chill Division</span>
+      <a href="https://github.com/Chill-Division/SOPs/blob/main/NOTICE">CC BY-SA 4.0</a>
+    </footer>
+  </main>
+</div>
+
+<div id="searchOverlay" class="search-overlay" hidden>
+  <div class="search-box" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-inputrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="searchInput" type="search" placeholder="Search this document" autocomplete="off" spellcheck="false">
+      <button id="searchClose" type="button" aria-label="Close search">Esc</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+</div>
+
+
+<script>
+(function () {
+  "use strict";
+
+  var body = document.body;
+  var htmlEl = document.documentElement;
+  var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+  var current = 0;
+
+  /* ---------- theme ---------- */
+  function setTheme(t) {
+    htmlEl.setAttribute("data-theme", t);
+    try { localStorage.setItem("sop-theme", t); } catch (e) {}
+  }
+  try {
+    var savedTheme = localStorage.getItem("sop-theme");
+    if (savedTheme === "dark" || savedTheme === "light") setTheme(savedTheme);
+  } catch (e) {}
+  document.getElementById("themeToggle").addEventListener("click", function () {
+    setTheme(htmlEl.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+
+  /* ---------- view mode ---------- */
+  var btnChapters = document.getElementById("viewChapters");
+  var btnSingle = document.getElementById("viewSingle");
+
+  function setView(mode, persist) {
+    if (mode === "single") {
+      body.classList.remove("mode-chapters");
+      btnSingle.classList.add("active");
+      btnChapters.classList.remove("active");
+    } else {
+      body.classList.add("mode-chapters");
+      btnChapters.classList.add("active");
+      btnSingle.classList.remove("active");
+      showChapter(current, false);
+    }
+    if (persist) { try { localStorage.setItem("sop-view", mode); } catch (e) {} }
+  }
+  btnChapters.addEventListener("click", function () { setView("chapters", true); });
+  btnSingle.addEventListener("click", function () { setView("single", true); });
+
+  /* ---------- chapters ---------- */
+  var prevBtn = document.getElementById("prevCh");
+  var nextBtn = document.getElementById("nextCh");
+  var pagerLabel = document.getElementById("pagerLabel");
+
+  function chapterTitle(i) {
+    var h = chapters[i] && chapters[i].querySelector("h1, h2, h3");
+    return h ? h.textContent : "Chapter " + (i + 1);
+  }
+
+  function showChapter(i, scrollTop) {
+    if (i < 0 || i >= chapters.length) return;
+    current = i;
+    chapters.forEach(function (ch, idx) {
+      ch.classList.toggle("current", idx === i);
+    });
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === chapters.length - 1;
+    prevBtn.textContent = i > 0 ? "← " + chapterTitle(i - 1) : "← Previous";
+    nextBtn.textContent = i < chapters.length - 1 ? chapterTitle(i + 1) + " →" : "Next →";
+    pagerLabel.textContent = (i + 1) + " / " + chapters.length;
+    tocLinks.forEach(function (a) {
+      a.classList.toggle("active", parseInt(a.getAttribute("data-ch"), 10) === i);
+    });
+    if (scrollTop !== false) window.scrollTo({ top: 0 });
+  }
+
+  prevBtn.addEventListener("click", function () { showChapter(current - 1); });
+  nextBtn.addEventListener("click", function () { showChapter(current + 1); });
+
+  /* ---------- TOC ---------- */
+  var sidebar = document.getElementById("sidebar");
+  var scrim = document.getElementById("scrim");
+  var mqNarrow = window.matchMedia("(max-width: 1023px)");
+  function closeDrawer() { body.classList.remove("nav-open"); }
+  document.getElementById("navToggle").addEventListener("click", function () {
+    if (mqNarrow.matches) {
+      body.classList.toggle("nav-open");        // mobile/tablet: off-canvas drawer
+    } else {
+      body.classList.toggle("sidebar-collapsed"); // desktop: collapse for wider reading
+    }
+  });
+  scrim.addEventListener("click", closeDrawer);
+  // Reset transient states when crossing the breakpoint so neither lingers.
+  mqNarrow.addEventListener("change", function () {
+    body.classList.remove("nav-open");
+    body.classList.remove("sidebar-collapsed");
+  });
+
+  tocLinks.forEach(function (a) {
+    a.addEventListener("click", function (ev) {
+      var chIdx = parseInt(a.getAttribute("data-ch"), 10);
+      if (body.classList.contains("mode-chapters") && !isNaN(chIdx)) {
+        showChapter(chIdx, false);
+      }
+      closeDrawer();
+      /* allow default anchor navigation to scroll to the id */
+    });
+  });
+
+  /* ---------- deep links (#anchor) ---------- */
+  function activateFromHash() {
+    var id = decodeURIComponent(location.hash.replace(/^#/, ""));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    var section = el.closest(".chapter");
+    if (section && body.classList.contains("mode-chapters")) {
+      showChapter(chapters.indexOf(section), false);
+    }
+    el.scrollIntoView({ behavior: "instant", block: "start" });
+    el.classList.add("search-hit");
+    setTimeout(function () { el.classList.remove("search-hit"); }, 1700);
+  }
+  window.addEventListener("hashchange", activateFromHash);
+
+  /* ---------- search ---------- */
+  var searchOverlay = document.getElementById("searchOverlay");
+  var searchInput = document.getElementById("searchInput");
+  var searchResults = document.getElementById("searchResults");
+  var GLOBAL_INDEX = window.SEARCH_INDEX || null; // present on the index page only
+  var localIndex = null;                          // built lazily from this page's DOM
+  var searchHits = [];
+  var searchSel = -1;
+  var KIND_WEIGHT = { h: 3, i: 2, b: 1 };
+
+  /* Direct text of a list item, excluding nested lists (they are indexed
+     as their own entries). */
+  function directText(el) {
+    var clone = el.cloneNode(true);
+    var lists = clone.querySelectorAll("ol, ul");
+    for (var i = 0; i < lists.length; i++) lists[i].parentNode.removeChild(lists[i]);
+    return clone.textContent;
+  }
+
+  function buildLocalIndex() {
+    var out = [];
+    chapters.forEach(function (ch, ci) {
+      var els = ch.querySelectorAll("h1[id], h2[id], h3[id], h4[id], li, p, tr");
+      Array.prototype.forEach.call(els, function (el) {
+        var tag = el.tagName.toLowerCase();
+        var e;
+        if (tag.charAt(0) === "h") {
+          e = { k: "h", t: el.textContent };
+        } else if (tag === "li") {
+          e = { k: el.hasAttribute("data-num") ? "i" : "b",
+                n: el.getAttribute("data-num") || "", t: directText(el) };
+        } else if (tag === "p") {
+          if (el.closest("li, table")) return; // covered by li / tr entries
+          e = { k: "b", t: el.textContent };
+        } else {
+          e = { k: "b", t: el.textContent }; // tr
+        }
+        e.t = e.t.replace(/\s+/g, " ").trim();
+        if (e.t.length < 3) return;
+        e.el = el;
+        e.ch = ci;
+        out.push(e);
+      });
+    });
+    return out;
+  }
+
+  function searchEntries() {
+    if (GLOBAL_INDEX) return GLOBAL_INDEX.entries;
+    if (!localIndex) localIndex = buildLocalIndex();
+    return localIndex;
+  }
+
+  function runSearch() {
+    var terms = searchInput.value.toLowerCase().split(/\s+/).filter(function (t) { return t.length > 0; });
+    searchHits = [];
+    searchSel = -1;
+    if (!terms.length) { renderResults(terms); return; }
+    var entries = searchEntries();
+    var scored = [];
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      var hay = ((e.n ? e.n + " " : "") + e.t).toLowerCase();
+      var ok = true, first = Infinity;
+      for (var j = 0; j < terms.length; j++) {
+        var p = hay.indexOf(terms[j]);
+        if (p === -1) { ok = false; break; }
+        if (p < first) first = p;
+      }
+      if (!ok) continue;
+      scored.push({ e: e, s: (KIND_WEIGHT[e.k] || 1) * 100000 - Math.min(first, 99999) });
+    }
+    scored.sort(function (a, b) { return b.s - a.s; });
+    searchHits = scored.slice(0, 40).map(function (x) { return x.e; });
+    renderResults(terms);
+  }
+
+  function makeSnippet(text, terms) {
+    var lower = text.toLowerCase();
+    var first = -1;
+    for (var i = 0; i < terms.length; i++) {
+      var p = lower.indexOf(terms[i]);
+      if (p !== -1 && (first === -1 || p < first)) first = p;
+    }
+    var start = 0;
+    if (first > 60 && text.length > 170) {
+      start = text.lastIndexOf(" ", first - 40);
+      start = start === -1 ? first - 40 : start + 1;
+    }
+    var out = text.slice(start, start + 170);
+    return (start > 0 ? "… " : "") + out + (start + 170 < text.length ? " …" : "");
+  }
+
+  function appendHighlighted(parent, text, terms) {
+    var lower = text.toLowerCase();
+    var pos = 0;
+    while (pos < text.length) {
+      var best = -1, len = 0;
+      for (var i = 0; i < terms.length; i++) {
+        var p = lower.indexOf(terms[i], pos);
+        if (p !== -1 && (best === -1 || p < best)) { best = p; len = terms[i].length; }
+      }
+      if (best === -1) {
+        parent.appendChild(document.createTextNode(text.slice(pos)));
+        return;
+      }
+      if (best > pos) parent.appendChild(document.createTextNode(text.slice(pos, best)));
+      var mk = document.createElement("mark");
+      mk.textContent = text.slice(best, best + len);
+      parent.appendChild(mk);
+      pos = best + len;
+    }
+  }
+
+  function renderResults(terms) {
+    searchResults.innerHTML = "";
+    if (!searchHits.length) {
+      if (searchInput.value.replace(/\s+/g, "")) {
+        var none = document.createElement("div");
+        none.className = "search-empty";
+        none.textContent = "No matches";
+        searchResults.appendChild(none);
+      }
+      return;
+    }
+    searchHits.forEach(function (e) {
+      var item = document.createElement("button");
+      item.type = "button";
+      item.className = "search-result";
+      var metaText = "";
+      if (GLOBAL_INDEX) {
+        metaText = GLOBAL_INDEX.docs[e.d].n + (e.n ? " " + e.n : "");
+      } else if (e.n) {
+        metaText = e.n;
+      }
+      if (metaText) {
+        var meta = document.createElement("span");
+        meta.className = "sr-meta";
+        meta.textContent = metaText;
+        item.appendChild(meta);
+      }
+      var txt = document.createElement("span");
+      txt.className = "sr-text" + (e.k === "h" ? " sr-heading" : "");
+      appendHighlighted(txt, makeSnippet(e.t, terms), terms);
+      item.appendChild(txt);
+      item.addEventListener("click", function () { activateResult(e); });
+      searchResults.appendChild(item);
+    });
+  }
+
+  function activateResult(e) {
+    if (GLOBAL_INDEX) {
+      var doc = GLOBAL_INDEX.docs[e.d];
+      window.location.href = doc.s + ".html" + (e.id ? "#" + e.id : "");
+      return;
+    }
+    closeSearch();
+    if (body.classList.contains("mode-chapters")) showChapter(e.ch, false);
+    e.el.scrollIntoView({ behavior: "instant", block: "start" });
+    e.el.classList.add("search-hit");
+    setTimeout(function () { e.el.classList.remove("search-hit"); }, 1700);
+  }
+
+  function openSearch() {
+    searchOverlay.hidden = false;
+    searchInput.focus();
+    searchInput.select();
+  }
+  function closeSearch() { searchOverlay.hidden = true; }
+
+  document.getElementById("searchToggle").addEventListener("click", openSearch);
+  document.getElementById("searchClose").addEventListener("click", closeSearch);
+  searchOverlay.addEventListener("click", function (ev) {
+    if (ev.target === searchOverlay) closeSearch();
+  });
+  searchInput.addEventListener("input", runSearch);
+
+  function updateSearchSel() {
+    var nodes = searchResults.querySelectorAll(".search-result");
+    Array.prototype.forEach.call(nodes, function (n, i) {
+      n.classList.toggle("selected", i === searchSel);
+      if (i === searchSel) n.scrollIntoView({ block: "nearest" });
+    });
+  }
+
+  searchInput.addEventListener("keydown", function (ev) {
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+      ev.preventDefault();
+      if (!searchHits.length) return;
+      searchSel = ev.key === "ArrowDown"
+        ? Math.min(searchSel + 1, searchHits.length - 1)
+        : Math.max(searchSel - 1, 0);
+      updateSearchSel();
+    } else if (ev.key === "Enter") {
+      ev.preventDefault();
+      var idx = searchSel >= 0 ? searchSel : 0;
+      if (searchHits[idx]) activateResult(searchHits[idx]);
+    }
+  });
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && !searchOverlay.hidden) { closeSearch(); return; }
+    var t = ev.target;
+    var tag = t && t.tagName ? t.tagName.toLowerCase() : "";
+    if (tag === "input" || tag === "textarea" || (t && t.isContentEditable)) return;
+    if (ev.key === "/" || ((ev.ctrlKey || ev.metaKey) && String(ev.key).toLowerCase() === "k")) {
+      ev.preventDefault();
+      openSearch();
+    }
+  });
+
+  /* ---------- init ---------- */
+  var savedView = "chapters";
+  try { savedView = localStorage.getItem("sop-view") || "chapters"; } catch (e) {}
+  setView(savedView, false);
+  showChapter(0, false);
+  activateFromHash();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+/* Linktree page (index.html). Builds on the main website's ../css/site.css, as this repo is served at /links/. */
+
+.links-wrap {
+  max-width: 52rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Filter box (links.js shows it) ---------- */
+.links-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.links-tools input {
+  flex: 1 1 18rem;
+  margin: 0;
+}
+
+.links-count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.links-empty {
+  color: var(--muted);
+}
+
+/* ---------- The list ----------
+   Same markup as always (template.txt): a divider per month, then one cell per link. */
+ul.table-view {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each month's heading stays in view while you scroll through its links. */
+li.table-view-divider {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 1;
+  margin-top: 2rem;
+  padding: 0.75rem 0 0.6rem 0;
+  border-bottom: 2px solid var(--ink);
+  background: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+li.table-view-divider:first-child {
+  margin-top: 0;
+}
+
+li.table-view-cell {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+li.table-view-cell a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0.5rem;
+  color: var(--ink);
+  line-height: 1.45;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+/* An arrow on the right: every link opens in a new tab. */
+li.table-view-cell a::after {
+  content: "\2197";
+  flex: none;
+  color: var(--muted);
+  font-size: 0.95rem;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+li.table-view-cell a:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+li.table-view-cell a:hover::after {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+.table-view-cell a strong {
+  color: inherit;
+  font-weight: 500;
+}
+
+/* Small labels for files and videos, worked out from the link itself. */
+.table-view-cell a[href$=".pdf" i] strong::before,
+.table-view-cell a[href$=".pptx" i] strong::before,
+.table-view-cell a[href*="youtube.com/"] strong::before,
+.table-view-cell a[href*="youtu.be/"] strong::before {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  vertical-align: 0.12em;
+}
+
+.table-view-cell a[href$=".pdf" i] strong::before {
+  content: "PDF";
+}
+
+.table-view-cell a[href$=".pptx" i] strong::before {
+  content: "SLIDES";
+}
+
+.table-view-cell a[href*="youtube.com/"] strong::before,
+.table-view-cell a[href*="youtu.be/"] strong::before {
+  content: "VIDEO";
+}
+
+/* Links whose title starts with " - " follow on from the one above (links.js marks them). */
+li.table-view-cell.is-related a {
+  padding-left: 1.75rem;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  li.table-view-cell a,
+  li.table-view-cell a::after {
+    transition: none;
+  }
+}

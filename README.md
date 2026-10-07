@@ -8,3 +8,7 @@ Start a title with ` - ` to set it in under the link above it.
 ## Styling
 The page uses the main website's stylesheet and script (`../css/site.css`, `../js/site.js`), so it has to sit in
 the website's `links/` folder. `links.css` styles the list and `links.js` adds the filter box.
+
+## Deploys
+Pushes to `main` go live through the website's `deploy-hook.php` (see the Chill-Division/website repo), which pulls
+this repo into `links/` when GitHub's webhook for this repo calls it with the shared secret.
